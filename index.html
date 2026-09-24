@@ -51,8 +51,6 @@ button { font: inherit; color: inherit; }
 .navlinks { display: flex; gap: 40px; margin-left: 60px; align-items: center; }
 .navlinks button { background: none; border: 0; padding: 0; cursor: pointer; font-weight: 400; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.1em; transition: color 0.3s; font-family: "Noto Serif TC", serif; }
 .navlinks button:hover { color: var(--ink); }
-.nav-back { background: none; border: 0; padding: 0; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--ink); letter-spacing: 0.05em; font-family: "Noto Serif TC", serif; display: flex; align-items: center; gap: 8px; }
-.nav-back:hover { opacity: 0.7; }
 .nav-contact { background: none; border: 0; font-weight: 600; font-size: 0.85rem; font-family: "Playfair Display", serif; letter-spacing: 0.05em; cursor: pointer; border-left: 1px solid var(--line); padding: 30px 0 30px 40px; height: 100%; display: flex; align-items: center; text-transform: uppercase; }
 
 /* 左拉選單 (Drawer) */
@@ -68,7 +66,7 @@ button { font: inherit; color: inherit; }
 /* 安裝提示 Modal */
 .install-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
 .install-modal.show { opacity: 1; pointer-events: auto; }
-.im-content { background: var(--surface); padding: 40px; width: 100%; max-width: 400px; text-align: center; }
+.im-content { background: var(--surface); padding: 40px; width: 100%; max-width: 500px; text-align: center; max-height: 90vh; overflow-y: auto; }
 
 /* 首頁畫冊風格 (Hero Section) */
 .editorial-hero { display: flex; min-height: calc(100vh - 80px); background: var(--bg); overflow: hidden; }
@@ -115,7 +113,7 @@ button { font: inherit; color: inherit; }
 
 /* 內部工具頁 */
 .tool-page { background: var(--bg); min-height: 100vh; }
-.thero { padding: 80px 0; text-align: center; border-bottom: 1px solid var(--line); background: var(--bg-panel); }
+.thero { padding: 40px 0 60px; text-align: center; border-bottom: 1px solid var(--line); background: var(--bg-panel); }
 .thero h1 { font-family: "Noto Serif TC", serif; font-size: 2.5rem; letter-spacing: 0.05em; margin-bottom: 15px; }
 .thero .lede { color: var(--muted); font-size: 1rem; max-width: 600px; margin: 0 auto; line-height: 1.8; }
 .steps { list-style: none; display: flex; justify-content: center; gap: 40px; padding: 0; margin: 40px 0 0; }
@@ -130,7 +128,7 @@ button { font: inherit; color: inherit; }
 .dropzone.over { border-color: var(--ink); background: var(--bg-panel); }
 
 /* 按鈕與表單 (直角設計) */
-.btn { font-family: inherit; font-size: 0.9rem; letter-spacing: 0.05em; padding: 15px 30px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: all 0.3s; border-radius: 0; font-family: "Noto Sans TC", sans-serif; }
+.btn { font-family: inherit; font-size: 0.9rem; letter-spacing: 0.05em; padding: 15px 30px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: all 0.3s; border-radius: 0; font-family: "Noto Sans TC", sans-serif; display: inline-flex; align-items: center; justify-content: center; gap: 8px;}
 .btn:hover:not(:disabled) { background: var(--bg-panel); }
 .btn.primary { background: var(--ink); color: #fff; }
 .btn.primary:hover:not(:disabled) { background: #333; }
@@ -183,8 +181,8 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
 /* 縮圖與列表清單 */
 .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
 .thumb { border: 1px solid transparent; padding: 10px; text-align: center; cursor: pointer; position: relative; transition: all 0.2s; background: var(--surface); }
-.thumb .img { height: 160px; display: grid; place-items: center; background: var(--bg-panel); margin-bottom: 10px; }
-.thumb canvas, .thumb img.pv { max-width: 100%; max-height: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.thumb .img { height: 160px; display: grid; place-items: center; background: var(--bg-panel); margin-bottom: 10px; overflow: hidden; }
+.thumb canvas, .thumb img.pv { max-width: 100%; max-height: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.3s ease; }
 .thumb .label { font-size: 0.85rem; color: var(--muted); font-family: "Noto Serif TC", serif; }
 .thumb.sel { border-color: var(--ink); background: var(--tint); }
 .thumb.del { opacity: 0.4; }
@@ -249,7 +247,7 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
   .logo-group { gap: 0; }
   .nav-contact { border-left: none; padding-left: 0; }
   
-  .filters { flex-wrap: wrap; gap: 15px; }
+  .filters { flex-wrap: wrap; gap: 15px; justify-content: flex-start; }
   .featured-card { width: 100%; transform: translateY(0); margin-top: 40px; }
   
   .ws-pages, .ws-preview { grid-template-columns: 1fr; }
@@ -263,7 +261,6 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
   
   .sitefoot .container { flex-direction: column; gap: 30px; }
 }
-
 @media (max-width: 480px) {
   .hero-title { font-size: 2.5rem; }
   .outline-text { font-size: 2.5rem; }
@@ -275,14 +272,29 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
 <div id="app"><div class="container"><p style="padding: 100px 0; text-align: center; color: var(--muted); font-family:'Playfair Display', serif; letter-spacing: 0.1em;">INITIALIZING SYSTEM...</p></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 
-<!-- 安裝引導 Modal -->
+<!-- 安裝引導 Modal (詳細圖文版) -->
 <div id="install-modal" class="install-modal">
   <div class="im-content">
-    <h3 class="serif" style="margin-bottom:15px; font-size:1.5rem;">安裝為原生 App</h3>
-    <p style="color:var(--muted); font-size:0.95rem; line-height:1.6; margin-bottom:25px;">
-      iOS 用戶請點擊底部工具列的「分享」圖示 ⍗，選擇<strong>「加入主畫面」</strong>。<br><br>
-      Android 用戶請點擊右上角「選單 ⋮」，選擇<strong>「加到主畫面」</strong>。
-    </p>
+    <h3 class="serif" style="margin-bottom:25px; font-size:1.5rem;">安裝為原生 App</h3>
+    
+    <div style="background:var(--bg-panel); padding:20px; text-align:left; margin-bottom:15px; border-left:4px solid var(--ink);">
+      <b style="display:block; margin-bottom:10px; font-size:1.05rem;">🍎 蘋果 iOS (Safari)</b>
+      <ol style="margin:0; padding-left:20px; color:var(--muted); line-height:1.6; font-size:0.9rem;">
+        <li>點擊瀏覽器底部的 <b>「分享」圖示</b> (方塊帶向上箭頭)</li>
+        <li>將選單往下滑，點選 <b>「加入主畫面」</b></li>
+        <li>確認名稱後，點擊右上角 <b>「新增」</b></li>
+      </ol>
+    </div>
+    
+    <div style="background:var(--bg-panel); padding:20px; text-align:left; margin-bottom:30px; border-left:4px solid var(--ink);">
+      <b style="display:block; margin-bottom:10px; font-size:1.05rem;">🤖 安卓 Android (Chrome)</b>
+      <ol style="margin:0; padding-left:20px; color:var(--muted); line-height:1.6; font-size:0.9rem;">
+        <li>點擊瀏覽器右上角的 <b>「設定選單 ⋮」</b></li>
+        <li>點選 <b>「加到主畫面」</b> 或 <b>「安裝應用程式」</b></li>
+        <li>點擊 <b>「新增」</b> 即可完成</li>
+      </ol>
+    </div>
+    
     <button class="btn primary block" onclick="document.getElementById('install-modal').classList.remove('show')">我知道了</button>
   </div>
 </div>
@@ -518,7 +530,7 @@ function thumbLoader(pdf){
 }
 function stopLoaders(){ loaders.forEach(l => l.stop()); loaders.clear(); }
 
-/* --- 重複偵測與文字圖片工具 --- */
+/* --- 重複偵測與圖片處理工具 --- */
 function fingerprint(src){
   const c = document.createElement('canvas'); c.width = c.height = 32; const x = c.getContext('2d', { willReadFrequently:true });
   x.fillStyle = '#fff'; x.fillRect(0, 0, 32, 32); x.drawImage(src, 0, 0, 32, 32);
@@ -543,6 +555,7 @@ function findDuplicates(entries){
 async function pageText(pdf, n){ try { const p = await pdf.getPage(n); const t = await p.getTextContent(); return t.items.map(x => x.str).join('').replace(/\s+/g, ''); } catch(e){ return ''; } }
 const FONT_STACK = '"Noto Serif TC", "Playfair Display", serif';
 const canvasPng = async c => new Uint8Array(await (await toBlob(c, 'image/png')).arrayBuffer());
+
 async function textStamp(text, { sizePt, color, angle, weight }){
   try { await document.fonts.load(`${weight} ${sizePt}px ${FONT_STACK}`, text); } catch(e){}
   const probe = document.createElement('canvas').getContext('2d');
@@ -559,6 +572,7 @@ async function textStamp(text, { sizePt, color, angle, weight }){
   ctx.fillText(text, 0, 0);
   return { png:await canvasPng(c), w:cw / S, h:ch / S };
 }
+
 function loadImage(file){
   return new Promise((res, rej) => {
     const url = URL.createObjectURL(file); const img = new Image();
@@ -566,6 +580,7 @@ function loadImage(file){
     img.src = url;
   });
 }
+
 async function imageStamp(img, angle){
   const k = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight));
   const iw = img.naturalWidth * k, ih = img.naturalHeight * k;
@@ -576,14 +591,35 @@ async function imageStamp(img, angle){
   ctx.drawImage(img, -iw / 2, -ih / 2, iw, ih);
   return { png:await canvasPng(c), w:cw, h:ch, srcW:iw };
 }
-async function imageToBytes(file){
+
+// 增強版 imageToBytes 支援旋轉圖片處理
+async function imageToBytes(file, rot = 0){
   const img = await loadImage(file);
   const k = Math.min(1, 4000 / Math.max(img.naturalWidth, img.naturalHeight));
-  const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
-  const c = document.createElement('canvas'); c.width = w; c.height = h;
-  const ctx = c.getContext('2d'); const isPng = file.type === 'image/png' || /\.png$/i.test(file.name);
+  let w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+  
+  const c = document.createElement('canvas');
+  let rad = 0;
+  if (rot) {
+    rad = (rot % 360) * Math.PI / 180;
+    if (rot % 180 !== 0) { const tmp = w; w = h; h = tmp; } // 交換長寬
+  }
+  
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  const isPng = file.type === 'image/png' || /\.png$/i.test(file.name);
   if (!isPng){ ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
-  ctx.drawImage(img, 0, 0, w, h); URL.revokeObjectURL(img.src);
+  
+  if (rot) {
+    ctx.translate(w/2, h/2);
+    ctx.rotate(rad);
+    const origW = img.naturalWidth * k, origH = img.naturalHeight * k;
+    ctx.drawImage(img, -origW/2, -origH/2, origW, origH);
+  } else {
+    ctx.drawImage(img, 0, 0, w, h);
+  }
+  
+  URL.revokeObjectURL(img.src);
   const blob = await toBlob(c, isPng ? 'image/png' : 'image/jpeg', 0.92); c.width = c.height = 0;
   return { bytes:new Uint8Array(await blob.arrayBuffer()), kind:isPng ? 'png' : 'jpg', w, h };
 }
@@ -606,9 +642,6 @@ function navToCat(cat) {
 }
 
 function topNav(isToolPage = false){
-  const backBtn = isToolPage ? el('button', { class:'nav-back', type:'button', onclick:() => go(null) }, '← 返回首頁') : null;
-  
-  // 建立漢堡按鈕與左拉選單
   const burger = el('button', { class:'hamburger', type:'button' }, '☰');
   const drawer = el('div', { class:'mobile-drawer' },
     el('button', { class:'drawer-close', onclick: () => closeDrawer() }, '✕'),
@@ -616,7 +649,7 @@ function topNav(isToolPage = false){
     el('button', { class:'drawer-link', onclick:() => { navToCat('org'); closeDrawer(); } }, '頁面整理'),
     el('button', { class:'drawer-link', onclick:() => { navToCat('edit'); closeDrawer(); } }, '編輯加工'),
     el('button', { class:'drawer-link', onclick:() => { navToCat('to'); closeDrawer(); } }, '格式轉換'),
-    el('button', { class:'drawer-link', style:'margin-top:auto; color:var(--ink); font-weight:700;', onclick: () => { document.getElementById('install-modal').classList.add('show'); closeDrawer(); } }, '⤓ 加到手機主畫面')
+    el('button', { class:'drawer-link', style:'margin-top:auto; color:var(--ink); font-weight:700;', onclick: () => { document.getElementById('install-modal').classList.add('show'); closeDrawer(); } }, '⤓ 加到主畫面')
   );
   const overlay = el('div', { class:'drawer-overlay', onclick: () => closeDrawer() });
   
@@ -630,7 +663,6 @@ function topNav(isToolPage = false){
         burger,
         el('button', { class:'logo', type:'button', onclick:() => go(null) }, 'P.'), 
         el('span', { class:'logo-dots' }, '::'),
-        backBtn,
         el('div', { class:'navlinks' }, 
           el('button', { type:'button', onclick:() => navToCat('org') }, '頁面整理'),
           el('button', { type:'button', onclick:() => navToCat('edit') }, '編輯加工'),
@@ -650,15 +682,31 @@ function siteFoot(){
     ), el('ul', {}, TOOLS.map(t => el('li', {}, el('button', { type:'button', onclick:() => go(t.id) }, t.name))))
   ));
 }
+
 function toolShell(t, lede){
   const steps = ['選擇檔案', '預覽設定', '下載完成'].map((s, i) => el('li', { class:'step' }, el('span', { class:'serif' }, String(i + 1) + '.'), s));
   const stage = el('div', { class:'stage' });
-  const page = el('div', { class:'tool-page' }, topNav(true), el('section', { class:'thero' }, el('h1', { text:t.name }), el('p', { class:'lede', text:lede }), el('ol', { class:'steps' }, steps)), stage, siteFoot());
+  
+  // 顯眼的返回按鈕區塊
+  const backBtnContainer = el('div', { class:'container', style:'padding-bottom: 10px; display:flex; justify-content: flex-start;' },
+      el('button', { class:'btn', style:'padding:10px 20px; display:flex; align-items:center; gap:8px; font-weight:600;', type:'button', onclick:() => go(null) }, '← 返回工具列表')
+  );
+
+  const page = el('div', { class:'tool-page' }, 
+    topNav(true), 
+    el('section', { class:'thero', style:'padding-top:40px;' }, 
+      backBtnContainer,
+      el('h1', { text:t.name }), 
+      el('p', { class:'lede', text:lede }), 
+      el('ol', { class:'steps' }, steps)
+    ), 
+    stage, siteFoot());
+    
   const setStep = n => steps.forEach((s, i) => { s.classList.toggle('done', i < n - 1); s.classList.toggle('on', i === n - 1); });
   setStep(1); return { page, stage, setStep };
 }
 
-/* 強化版 filePicker (嚴格限制 accept 以優化 Android 相機喚醒) */
+/* 強化版 filePicker */
 function filePicker(accept, multiple, onFiles, capture){
   const props = { type:'file', accept, class:'sr-only', tabindex:'-1', onchange:() => { const fs = [...input.files]; input.value = ''; if (fs.length) onFiles(fs); } };
   if (multiple) props.multiple = true;
@@ -667,13 +715,12 @@ function filePicker(accept, multiple, onFiles, capture){
   return input;
 }
 
-/* 強化版 uploadCard 支援手機拍照按鈕 */
+/* 強化版 uploadCard */
 function uploadCard({ accept, multiple, label, formats, onFiles, captureLabel, onCapture }){
   const msg = msgBox(); 
   const input = filePicker(accept, multiple, onFiles);
   let captureInput = null, captureBtn = null;
   if (captureLabel && onCapture) {
-     // 限制副檔名能大幅提高部分 Android 系統直接開啟相機的機率
      captureInput = filePicker('image/jpeg,image/png,image/jpg', false, onCapture, 'environment');
      captureBtn = el('button', { class:'btn big', type:'button', onclick:() => captureInput.click() }, captureLabel);
   }
@@ -957,11 +1004,11 @@ const TOOLS = [
   { id:'rotate',    cat:'org',  name:'旋轉 PDF',    desc:'輕鬆將倒置或傾斜的頁面轉正。' },
   { id:'pagenum',   cat:'edit', name:'添加頁碼',    desc:'以優雅的字體，為每一頁印上頁碼。' },
   { id:'watermark', cat:'edit', name:'浮水印',      desc:'疊加專屬文字或圖片印記。可自由調整大小角度。' },
-  { id:'img2pdf',   cat:'to',   name:'圖片轉 PDF',  desc:'將您的相片與圖檔集結成 PDF 畫冊。自動偵測重複。' },
+  { id:'img2pdf',   cat:'to',   name:'圖片轉 PDF',  desc:'將相片與圖檔集結成 PDF。支援直接拍照。' },
   { id:'word2pdf',  cat:'to',   name:'Word 轉 PDF', desc:'保留原始版面的文字文件轉換。' },
   { id:'excel2pdf', cat:'to',   name:'Excel 轉 PDF',desc:'可靈活縮放至單一頁面的報表轉換。' },
   { id:'pdf2img',   cat:'to',   name:'PDF 轉圖片',  desc:'將文件中的每一頁匯出為高品質圖像。' },
-  { id:'ocr',       cat:'ocr',  name:'文字擷取',    desc:'利用本地端 AI 技術，精準識別掃描檔文字。', isNew:true }
+  { id:'ocr',       cat:'ocr',  name:'文字擷取',    desc:'利用本地端 AI 技術識別照片文字。支援直接拍照。', isNew:true }
 ];
 
 const VIEWS = {
@@ -1131,7 +1178,7 @@ const VIEWS = {
     });
   },
   img2pdf(t){
-    const { page, stage, setStep } = toolShell(t, '將您的相片與圖檔集結成 PDF 畫冊。支援直接拍照。自動偵測重複。');
+    const { page, stage, setStep } = toolShell(t, '將您的相片與圖檔集結成 PDF。支援直接拍照，並能旋轉圖片。');
     const items = []; let uid = 0, ws = null, list, viewer, ab, auto, msg, banner;
     const up = uploadCard({ 
       accept:'image/*', multiple:true, label:'從相簿選擇', formats:'支援 JPG, PNG 等', onFiles:add,
@@ -1142,7 +1189,7 @@ const VIEWS = {
       const loads = [];
       for (const f of fs){ 
         if (!/^image\//.test(f.type)) continue; 
-        const it = { id:uid++, file:f, url:URL.createObjectURL(f), bytes:null, fp:null, ratio:1 }; 
+        const it = { id:uid++, file:f, url:URL.createObjectURL(f), bytes:null, fp:null, ratio:1, rot:0 }; 
         items.push(it); 
         loads.push(new Promise(res => {
           const im = new Image(); 
@@ -1156,10 +1203,34 @@ const VIEWS = {
     function buildWs(){
       ws = Workspace('pages'); msg = msgBox(); list = el('div', { class:'thumbs' }); viewer = Viewer('畫冊預覽'); banner = el('div', { class:'banner' });
       ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile('相片集.pdf', pdfBlob(b))) setStep(3); }, msg);
-      auto = AutoResult(viewer, async () => { if (!items.length) return null; for (const it of items) if (!it.bytes) it.bytes = await imageToBytes(it.file); return Core.imagesToPdf(items.filter(it => it.bytes).map(it => it.bytes), { size:'a4', orient:'auto', margin:36 }); }, ab);
       
+      auto = AutoResult(viewer, async () => { 
+        if (!items.length) return null; 
+        for (const it of items) {
+           if (!it.bytes) it.bytes = (await imageToBytes(it.file, it.rot)).bytes; 
+        }
+        return Core.imagesToPdf(items.filter(it => it.bytes).map(it => ({bytes: it.bytes, kind: /\.png$/i.test(it.file.name)?'png':'jpg', w:1, h:1})), { size:'a4', orient:'auto', margin:36 }); 
+        // 註: imagesToPdf 內部已不依賴 it.w/it.h 進行 fit 縮放，而是直接嵌入
+      }, ab);
+      
+      // 修復：修改 imagesToPdf 傳遞結構
+      auto = AutoResult(viewer, async () => { 
+        if (!items.length) return null; 
+        const processedImgs = [];
+        for (const it of items) {
+           if (!it.bytes) {
+               const res = await imageToBytes(it.file, it.rot);
+               it.bytes = res.bytes;
+               it.w = res.w;
+               it.h = res.h;
+               it.kind = res.kind;
+           }
+           processedImgs.push({ bytes: it.bytes, kind: it.kind, w: it.w, h: it.h });
+        }
+        return Core.imagesToPdf(processedImgs, { size:'a4', orient:'auto', margin:36 }); 
+      }, ab);
+
       const more = filePicker('image/*', true, add);
-      // 限制明確的圖片格式，幫助特定 Android 系統強制喚醒相機
       const cam = filePicker('image/jpeg,image/png,image/jpg', false, add, 'environment');
       
       ws.main.append(
@@ -1176,7 +1247,16 @@ const VIEWS = {
     }
     function draw(){
       if (!items.length){ ws = null; stage.replaceChildren(up); setStep(1); return; }
-      list.replaceChildren(...items.map((it, k) => el('div', { class:'thumb', 'data-id':it.id }, el('div', { class:'img' }, el('img', { class:'pv', src:it.url })), el('span', { class:'label', text:`P.${k + 1}` }), el('div', { class:'ctls' }, el('button', { class:'ctl', type:'button', onclick:() => { URL.revokeObjectURL(it.url); items.splice(k, 1); draw(); auto.run(); } }, '✕')))));
+      list.replaceChildren(...items.map((it, k) => 
+        el('div', { class:'thumb', 'data-id':it.id }, 
+          el('div', { class:'img' }, el('img', { class:'pv', src:it.url, style:`transform: rotate(${it.rot}deg);` })), 
+          el('span', { class:'label', text:`P.${k + 1}` }), 
+          el('div', { class:'ctls' }, 
+             el('button', { class:'ctl', type:'button', onclick:() => { it.rot = (it.rot + 90) % 360; it.bytes = null; draw(); auto.run(); } }, '↻'),
+             el('button', { class:'ctl', type:'button', onclick:() => { URL.revokeObjectURL(it.url); items.splice(k, 1); draw(); auto.run(); } }, '✕')
+          )
+        )
+      ));
       
       const dups = findDuplicates(items.map(it => it.fp ? { fp:it.fp, ratio:it.ratio } : null));
       if (dups.size) {
@@ -1215,19 +1295,39 @@ const VIEWS = {
         if (/\.pdf$/i.test(f.name) || f.type === 'application/pdf') { const doc = await openPdf(f); srcCanvas = await renderPage(doc.pdf, 1, { maxDim: 2000 }); }
         else { const im = new Image(); await new Promise((res, rej) => { im.onload = res; im.onerror = rej; im.src = URL.createObjectURL(f); }); srcCanvas = document.createElement('canvas'); srcCanvas.width = im.naturalWidth; srcCanvas.height = im.naturalHeight; srcCanvas.getContext('2d').drawImage(im, 0, 0); }
       } catch(e) { setMsg(up.msg, errText(e), 'err'); return; }
-      const card = el('div', { class:'card ws ws-preview' }); const main = el('div', { class:'ws-main' }); const side = el('div', { class:'ws-side', style:'padding:40px; display:grid; place-items:center;' });
-      const pvImg = el('img', { src: srcCanvas.toDataURL('image/jpeg', 0.8), style:'max-width:100%; box-shadow:var(--shadow);' }); side.append(pvImg);
+      
+      const card = el('div', { class:'card ws ws-preview' }); const main = el('div', { class:'ws-main' }); const side = el('div', { class:'ws-side', style:'padding:40px; display:grid; place-items:center; align-content:center;' });
+      const pvImg = el('img', { src: srcCanvas.toDataURL('image/jpeg', 0.8), style:'max-width:100%; max-height: 400px; box-shadow:var(--shadow);' }); side.append(pvImg);
+      
       const status = el('div', { class:'serif', style:'color:var(--muted); margin-bottom:15px; font-size: 0.95rem;' }, '就緒，請點擊開始識別。');
-      const ta = el('textarea', { class:'input', style:'min-height: 350px;' }); const startBtn = el('button', { class:'btn primary big block', type:'button' }, '提取文字');
+      const ta = el('textarea', { class:'input', style:'min-height: 350px;' }); 
+      
+      const rotBtn = el('button', { class:'btn', style:'padding:15px 25px; font-size:1.2rem; flex:none;', type:'button', onclick:() => {
+           const w = srcCanvas.width, h = srcCanvas.height;
+           const nc = document.createElement('canvas'); nc.width = h; nc.height = w;
+           const nx = nc.getContext('2d');
+           nx.translate(h/2, w/2); nx.rotate(90 * Math.PI / 180);
+           nx.drawImage(srcCanvas, -w/2, -h/2);
+           srcCanvas = nc;
+           pvImg.src = srcCanvas.toDataURL('image/jpeg', 0.8);
+      }}, '↻');
+      
+      const startBtn = el('button', { class:'btn primary big block', type:'button' }, '提取文字');
       startBtn.onclick = async () => {
-        startBtn.disabled = true;
+        startBtn.disabled = true; rotBtn.disabled = true;
         try {
           status.textContent = '正在載入 Tesseract.js 繁體中文模型...';
           const { data: { text } } = await Tesseract.recognize(srcCanvas, 'chi_tra+eng', { logger: m => { if (m.status === 'recognizing text') { status.textContent = `文字辨識中... ${Math.round(m.progress * 100)}%`; } else { status.textContent = `初始化 (${m.status})...`; } } });
           ta.value = text.trim(); status.textContent = '識別完成，您可以直接複製文字。'; setStep(3);
-        } catch(e) { status.textContent = '識別過程發生錯誤。'; status.style.color = 'var(--err)'; } finally { startBtn.disabled = false; startBtn.textContent = '再次提取'; }
+        } catch(e) { status.textContent = '識別過程發生錯誤。'; status.style.color = 'var(--err)'; } finally { startBtn.disabled = false; rotBtn.disabled = false; startBtn.textContent = '再次提取'; }
       };
-      main.append(fileHead(title, '影像來源', () => { wrap.replaceChildren(up); setStep(1); }), el('h2', { class:'sec-title', text:'文字識別結果' }), status, ta, el('div', { style:'margin-top:20px;' }, startBtn)); card.append(main, side); wrap.replaceChildren(card); setStep(2);
+      main.append(
+          fileHead(title, '影像來源', () => { wrap.replaceChildren(up); setStep(1); }), 
+          el('h2', { class:'sec-title', text:'文字識別結果' }), 
+          status, ta, 
+          el('div', { style:'display:flex; gap:15px; margin-top:20px;' }, rotBtn, startBtn)
+      ); 
+      card.append(main, side); wrap.replaceChildren(card); setStep(2);
     }
     stage.append(wrap); return page;
   }
