@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- 啟用全螢幕 App 模式，隱藏上下網址列與導覽列 -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#f2f2f2">
+<!-- 指定加到手機桌面時的 App 圖示 -->
+<link rel="apple-touch-icon" href="card.jpg">
 <title>P. :: PDF 工具箱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -225,7 +232,7 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
 .item .mini { width: 50px; height: 70px; background: var(--bg-panel); display: grid; place-items: center; flex: none; }
 .item .mini canvas { max-width: 100%; max-height: 100%; }
 .item .pos { font-family: "Playfair Display", serif; font-size: 1.2rem; width: 30px; text-align: center; }
-.addmore { margin-top: 20px; border: 1px dashed var(--line); padding: 20px; text-align: center; cursor: pointer; background: none; width: 100%; color: var(--ink); font-family: "Noto Serif TC", serif; font-size: 1rem; transition: background 0.3s; }
+.addmore { border: 1px dashed var(--line); padding: 20px; text-align: center; cursor: pointer; background: none; color: var(--ink); font-family: "Noto Serif TC", serif; font-size: 1rem; transition: background 0.3s; }
 .addmore:hover { background: var(--bg-panel); }
 
 /* 訊息與橫幅 */
@@ -259,6 +266,39 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
 .sheet h2 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
 .sheet table { border-collapse: collapse; table-layout: fixed; }
 .sheet td { padding: 1px 4px; line-height: 1.25; vertical-align: bottom; overflow: visible; color: #000; }
+
+/* ==========================================
+   手機版與平板 RWD 響應式設計
+   ========================================== */
+@media (max-width: 900px) {
+  .editorial-hero { flex-direction: column; min-height: auto; }
+  .hero-left, .hero-right { flex: none; width: 100%; padding: 60px 30px; }
+  .hero-right { min-height: 400px; }
+  .hero-title { font-size: 3rem; }
+  
+  .navlinks { display: none; }
+  .nav-contact { border-left: none; padding-left: 0; }
+  
+  .filters { flex-wrap: wrap; gap: 15px; }
+  .featured-card { width: 100%; transform: translateY(0); margin-top: 40px; }
+  
+  .ws-pages, .ws-preview { grid-template-columns: 1fr; }
+  .ws-main { border-right: none !important; border-bottom: 1px solid var(--line); padding: 20px; }
+  .ws-preview .ws-main { border-left: none; order: 1; }
+  .ws-preview .ws-side { order: 2; }
+  
+  .container { padding: 0 20px; }
+  .tools-section { padding: 60px 0; }
+  .dropzone { padding: 40px 20px; }
+  
+  .sitefoot .container { flex-direction: column; gap: 30px; }
+}
+
+@media (max-width: 480px) {
+  .hero-title { font-size: 2.5rem; }
+  .outline-text { font-size: 2.5rem; }
+  .thumb { width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -615,21 +655,38 @@ function toolShell(t, lede){
   const setStep = n => steps.forEach((s, i) => { s.classList.toggle('done', i < n - 1); s.classList.toggle('on', i === n - 1); });
   setStep(1); return { page, stage, setStep };
 }
-function filePicker(accept, multiple, onFiles){
-  const input = el('input', { type:'file', accept, multiple, class:'sr-only', tabindex:'-1', onchange:() => { const fs = [...input.files]; input.value = ''; if (fs.length) onFiles(fs); } });
+
+/* 強化版 filePicker 支援開啟相機 */
+function filePicker(accept, multiple, onFiles, capture){
+  const props = { type:'file', accept, multiple, class:'sr-only', tabindex:'-1', onchange:() => { const fs = [...input.files]; input.value = ''; if (fs.length) onFiles(fs); } };
+  if (capture) props.capture = capture;
+  const input = el('input', props);
   return input;
 }
-function uploadCard({ accept, multiple, label, formats, onFiles }){
-  const msg = msgBox(); const input = filePicker(accept, multiple, onFiles);
+
+/* 強化版 uploadCard 支援手機拍照按鈕 */
+function uploadCard({ accept, multiple, label, formats, onFiles, captureLabel, onCapture }){
+  const msg = msgBox(); 
+  const input = filePicker(accept, multiple, onFiles);
+  let captureInput = null, captureBtn = null;
+  if (captureLabel && onCapture) {
+     captureInput = filePicker(accept, false, onCapture, 'environment');
+     captureBtn = el('button', { class:'btn big', type:'button', onclick:() => captureInput.click() }, captureLabel);
+  }
   const zone = el('div', { class:'dropzone' }, 
     el('div', { class:'serif', style:'font-size:2rem; color:var(--line); margin-bottom: 20px; letter-spacing:0.05em;'}, 'Drop files here'),
-    el('button', { class:'btn primary big', type:'button', onclick:() => input.click() }, label),
-    formats ? el('p', { style:'margin-top:20px; font-size:0.85rem; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;'}, formats) : null, input);
+    el('div', { style:'display:flex; gap:15px; flex-wrap:wrap; justify-content:center;' },
+      el('button', { class:'btn primary big', type:'button', onclick:() => input.click() }, label),
+      captureBtn
+    ),
+    formats ? el('p', { style:'margin-top:20px; font-size:0.85rem; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;'}, formats) : null, 
+    input, captureInput);
   zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
   zone.addEventListener('dragleave', () => zone.classList.remove('over'));
   zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); const fs = [...(e.dataTransfer ? e.dataTransfer.files : [])]; if (fs.length) onFiles(multiple ? fs : [fs[0]]); });
   const node = el('div', { class:'card upload' }, zone, msg); node.msg = msg; return node;
 }
+
 function fileHead(name, meta, onChange){
   return el('div', { class:'filehead' }, el('div', {}, el('div', { class:'nm' }, name), meta ? el('div', { class:'mt', text:meta }) : null), onChange ? el('button', { class:'btn', type:'button', style:'padding:10px 20px;', onclick:onChange }, '更換檔案') : null);
 }
@@ -644,7 +701,6 @@ function Viewer(caption){
   const prev = el('button', { class:'vbtn', type:'button', disabled:true, onclick:() => goTo(idx - 1) }, '‹');
   const next = el('button', { class:'vbtn', type:'button', disabled:true, onclick:() => goTo(idx + 1) }, '›');
   const node = el('div', { class:'viewer' }, el('div', { class:'vcap' }, el('span', { text:caption })), stage, el('div', { class:'vnav' }, prev, label, next));
-  // 放大預覽內部渲染解析度（提升至 1200）
   const maxDim = () => Math.max(240, Math.min(1200, (stage.clientWidth || 420) - 44));
   async function draw(){
     const my = ++seq; if (!prov) return;
@@ -696,10 +752,7 @@ function segmented(opts, value, onchange){ const wrap = el('div', { class:'seg',
 function radioGroup(name, opts, value, onchange){ const wrap = el('div', { role:'radiogroup' }); opts.forEach(([v, title, desc, extra]) => { const input = el('input', { type:'radio', name, value:v, checked:v === value, onchange:() => onchange(v) }); wrap.append(el('label', { class:'choice' }, input, el('span', { style:'flex:1;min-width:0' }, el('b', { text:title }), desc ? el('span', { class:'hint', style:'display:block; margin-top:5px; font-size:0.85rem; color:var(--muted);', text:desc }) : null, extra || null))); }); return wrap; }
 
 function mkLabel(text, rightEl) {
-  return el('div', { style:'display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;' },
-    el('label', { class:'flabel', style:'margin-bottom:0;', text:text }),
-    rightEl
-  );
+  return el('div', { style:'display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;' }, el('label', { class:'flabel', style:'margin-bottom:0;', text:text }), rightEl);
 }
 
 function singlePdfTool(t, lede, layout, build){
@@ -1074,9 +1127,13 @@ const VIEWS = {
     });
   },
   img2pdf(t){
-    const { page, stage, setStep } = toolShell(t, '將您的相片與圖檔集結成 PDF 畫冊。自動偵測重複。');
+    const { page, stage, setStep } = toolShell(t, '將您的相片與圖檔集結成 PDF 畫冊。支援直接拍照。自動偵測重複。');
     const items = []; let uid = 0, ws = null, list, viewer, ab, auto, msg, banner;
-    const up = uploadCard({ accept:'image/*', multiple:true, label:'選擇圖片', formats:'支援 JPG, PNG 等', onFiles:add });
+    const up = uploadCard({ 
+      accept:'image/*', multiple:true, label:'從相簿選擇', formats:'支援 JPG, PNG 等', onFiles:add,
+      captureLabel: '開啟相機拍照', onCapture: add
+    });
+    
     async function add(fs){ 
       const loads = [];
       for (const f of fs){ 
@@ -1096,8 +1153,19 @@ const VIEWS = {
       ws = Workspace('pages'); msg = msgBox(); list = el('div', { class:'thumbs' }); viewer = Viewer('畫冊預覽'); banner = el('div', { class:'banner' });
       ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile('相片集.pdf', pdfBlob(b))) setStep(3); }, msg);
       auto = AutoResult(viewer, async () => { if (!items.length) return null; for (const it of items) if (!it.bytes) it.bytes = await imageToBytes(it.file); return Core.imagesToPdf(items.filter(it => it.bytes).map(it => it.bytes), { size:'a4', orient:'auto', margin:36 }); }, ab);
+      
       const more = filePicker('image/*', true, add);
-      ws.main.append(el('h2', { class:'sec-title', text:'相片集' }), banner, list, el('button', { class:'addmore', type:'button', onclick:() => more.click() }, '+ 加入更多'), more, msg); ws.side.append(viewer.node, ab.node);
+      const cam = filePicker('image/*', false, add, 'environment');
+      
+      ws.main.append(
+        el('h2', { class:'sec-title', text:'相片集' }), banner, list, 
+        el('div', { style:'display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;' },
+          el('button', { class:'addmore', style:'margin-top:0; flex:1; min-width:140px;', type:'button', onclick:() => more.click() }, '+ 從相簿加入'),
+          el('button', { class:'addmore', style:'margin-top:0; flex:1; min-width:140px;', type:'button', onclick:() => cam.click() }, '+ 拍照加入')
+        ),
+        more, cam, msg
+      ); 
+      ws.side.append(viewer.node, ab.node);
       if (window.Sortable) Sortable.create(list, { onEnd(){ const ids = [...list.children].map(c => +c.dataset.id); const copy = items.slice(); items.length = 0; ids.forEach(id => items.push(copy.find(x => x.id === id))); draw(); auto.run(); } });
       stage.replaceChildren(ws.node); setStep(2);
     }
@@ -1130,8 +1198,11 @@ const VIEWS = {
     });
   },
   ocr(t){
-    const { page, stage, setStep } = toolShell(t, '使用 Tesseract.js 本地引擎，安全、快速地提取圖片或掃描文件中的文字。');
-    const up = uploadCard({ accept:'application/pdf,.pdf,image/*', multiple:false, label:'選擇 PDF 或相片', formats:'支援 PDF, JPG, PNG', onFiles:load });
+    const { page, stage, setStep } = toolShell(t, '使用 Tesseract.js 本地引擎，安全、快速地提取圖片或掃描文件中的文字。支援直接拍照。');
+    const up = uploadCard({ 
+      accept:'application/pdf,.pdf,image/*', multiple:false, label:'選擇 PDF 或相片', formats:'支援 PDF, JPG, PNG', onFiles:load,
+      captureLabel: '直接拍照辨識', onCapture: load
+    });
     const wrap = el('div', {}, up);
     async function load([f]){
       setMsg(up.msg, '解析中...', 'info'); let srcCanvas, title = baseName(f.name);
@@ -1151,7 +1222,7 @@ const VIEWS = {
           ta.value = text.trim(); status.textContent = '識別完成，您可以直接複製文字。'; setStep(3);
         } catch(e) { status.textContent = '識別過程發生錯誤。'; status.style.color = 'var(--err)'; } finally { startBtn.disabled = false; startBtn.textContent = '再次提取'; }
       };
-      main.append(fileHead(title, '第一頁', () => { wrap.replaceChildren(up); setStep(1); }), el('h2', { class:'sec-title', text:'文字識別結果' }), status, ta, el('div', { style:'margin-top:20px;' }, startBtn)); card.append(main, side); wrap.replaceChildren(card); setStep(2);
+      main.append(fileHead(title, '影像來源', () => { wrap.replaceChildren(up); setStep(1); }), el('h2', { class:'sec-title', text:'文字識別結果' }), status, ta, el('div', { style:'margin-top:20px;' }, startBtn)); card.append(main, side); wrap.replaceChildren(card); setStep(2);
     }
     stage.append(wrap); return page;
   }
