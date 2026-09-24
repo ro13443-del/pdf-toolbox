@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- 啟用全螢幕 App 模式，隱藏上下網址列與導覽列 -->
+<!-- 啟用全螢幕 App 模式 -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#f2f2f2">
-<!-- 指定加到手機桌面時的 App 圖示 -->
 <link rel="apple-touch-icon" href="card.jpg">
+<!-- 宣告 PWA Manifest 讓 Android 能自動識別並安裝 -->
+<link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIlAuIFBERiDlt6XlhbfnrrEiLAogICJzaG9ydF9uYW1lIjogIlBERiDlt6XlhbciLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2YyZjJmMiIsCiAgInRoZW1lX2NvbG9yIjogIiNmMmYyZjIiLAogICJpY29ucyI6IFt7CiAgICAic3JjIjogImNhcmQuanBnIiwKICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICJ0eXBlIjogImltYWdlL2pwZWciCiAgfV0KfQ==">
 <title>P. :: PDF 工具箱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,18 +23,9 @@
   --ink: #1a1a1a; 
   --muted: #757575; 
   --line: #cccccc; 
-  --focus: #1a1a1a;
   --paper-stage: #e8e8e8;
-  
-  --ok: #1a1a1a; --ok-soft: #f0f0f0; 
-  --err: #9e2a2b; --err-soft: #fbebeb; 
   --warn: #a67c00; --warn-soft: #fffdf0;
-  
-  --accent: #1a1a1a; 
-  --tint: #f8f8f8;
   --shadow: 0 20px 40px -20px rgba(0,0,0,0.15);
-  
-  color-scheme: light;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -43,67 +35,46 @@
 html { scroll-padding-top: 80px; scroll-behavior: smooth; }
 *, *::before, *::after { box-sizing: inherit; }
 [hidden] { display: none !important; }
-body { 
-  margin: 0; background: var(--bg); color: var(--ink);
-  font-family: "Noto Sans TC", "Helvetica Neue", Arial, sans-serif; 
-  font-size: 15px; line-height: 1.6; 
-  -webkit-font-smoothing: antialiased;
-}
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Noto Sans TC", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
 .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 .serif { font-family: "Noto Serif TC", "Playfair Display", serif; }
 
-/* 導覽列 (極簡明體) */
-.topnav { 
-  position: sticky; top: 0; z-index: 10; 
-  background: var(--surface); 
-  border-bottom: 1px solid var(--line);
-}
+/* 導覽列與手機左拉選單 */
+.topnav { position: sticky; top: 0; z-index: 10; background: var(--surface); border-bottom: 1px solid var(--line); }
 .topnav .container { height: 80px; display: flex; align-items: center; justify-content: space-between; }
 .logo-group { display: flex; align-items: center; gap: 40px; }
-.logo { 
-  font-family: "Playfair Display", "Noto Serif TC", serif;
-  font-weight: 700; font-size: 1.5rem; 
-  background: none; border: 0; cursor: pointer; padding: 0; letter-spacing: 0.05em;
-}
+.logo { font-family: "Playfair Display", "Noto Serif TC", serif; font-weight: 700; font-size: 1.5rem; background: none; border: 0; cursor: pointer; padding: 0; letter-spacing: 0.05em; }
 .logo-dots { font-size: 1.2rem; color: var(--ink); letter-spacing: 2px; }
 .navlinks { display: flex; gap: 40px; margin-left: 60px; align-items: center; }
-.navlinks button { 
-  background: none; border: 0; padding: 0; cursor: pointer; 
-  font-weight: 400; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.1em;
-  transition: color 0.3s; font-family: "Noto Serif TC", serif;
-}
+.navlinks button { background: none; border: 0; padding: 0; cursor: pointer; font-weight: 400; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.1em; transition: color 0.3s; font-family: "Noto Serif TC", serif; }
 .navlinks button:hover { color: var(--ink); }
-.nav-back {
-  background: none; border: 0; padding: 0; cursor: pointer;
-  font-weight: 600; font-size: 0.9rem; color: var(--ink); letter-spacing: 0.05em;
-  font-family: "Noto Serif TC", serif; display: flex; align-items: center; gap: 8px;
-}
+.nav-back { background: none; border: 0; padding: 0; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--ink); letter-spacing: 0.05em; font-family: "Noto Serif TC", serif; display: flex; align-items: center; gap: 8px; }
 .nav-back:hover { opacity: 0.7; }
-.nav-contact {
-  background: none; border: 0; font-weight: 600; font-size: 0.85rem; font-family: "Playfair Display", serif;
-  letter-spacing: 0.05em; cursor: pointer; border-left: 1px solid var(--line);
-  padding: 30px 0 30px 40px; height: 100%; display: flex; align-items: center; text-transform: uppercase;
-}
+.nav-contact { background: none; border: 0; font-weight: 600; font-size: 0.85rem; font-family: "Playfair Display", serif; letter-spacing: 0.05em; cursor: pointer; border-left: 1px solid var(--line); padding: 30px 0 30px 40px; height: 100%; display: flex; align-items: center; text-transform: uppercase; }
+
+/* 左拉選單 (Drawer) */
+.hamburger { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--ink); padding: 0; margin-right: 20px; line-height: 1; }
+.mobile-drawer { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: var(--surface); z-index: 1000; box-shadow: 2px 0 20px rgba(0,0,0,0.15); transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 60px 40px; display: flex; flex-direction: column; gap: 30px; align-items: flex-start; overflow-y: auto; }
+.mobile-drawer.open { left: 0; }
+.drawer-close { position: absolute; top: 25px; right: 25px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--muted); }
+.drawer-link { background: none; border: none; font-size: 1.1rem; color: var(--muted); cursor: pointer; font-family: "Noto Serif TC", serif; padding: 0; transition: color 0.3s; letter-spacing: 0.05em; text-align: left; }
+.drawer-link:hover, .drawer-link.active { color: var(--ink); font-weight: 600; }
+.drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.drawer-overlay.show { opacity: 1; pointer-events: auto; }
+
+/* 安裝提示 Modal */
+.install-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
+.install-modal.show { opacity: 1; pointer-events: auto; }
+.im-content { background: var(--surface); padding: 40px; width: 100%; max-width: 400px; text-align: center; }
 
 /* 首頁畫冊風格 (Hero Section) */
 .editorial-hero { display: flex; min-height: calc(100vh - 80px); background: var(--bg); overflow: hidden; }
-.hero-left { 
-  flex: 0 0 45%; background: var(--bg-panel); 
-  padding: 100px 80px; display: flex; flex-direction: column; justify-content: center;
-}
-.hero-right {
-  flex: 1; position: relative; background-color: #e0e0e0;
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
-  background-image: url('bg.jpg'); /* 本地讀取背景圖片 */
-  background-size: cover; background-position: center;
-}
-.hero-right::before {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(232,232,232,0.75) 0%, rgba(213,213,213,0.9) 100%); z-index: 0;
-}
+.hero-left { flex: 0 0 45%; background: var(--bg-panel); padding: 100px 80px; display: flex; flex-direction: column; justify-content: center; }
+.hero-right { flex: 1; position: relative; background-color: #e0e0e0; display: flex; align-items: center; justify-content: center; overflow: hidden; background-image: url('bg.jpg'); background-size: cover; background-position: center; }
+.hero-right::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(232,232,232,0.75) 0%, rgba(213,213,213,0.9) 100%); z-index: 0; }
 .hero-subtitle { font-size: 0.85rem; letter-spacing: 0.2em; color: var(--ink); margin-bottom: 20px; font-family: "Playfair Display", serif; text-transform: uppercase; opacity: 0.8;}
 .hero-title { font-size: 4vw; font-weight: 500; line-height: 1.2; letter-spacing: 0.05em; margin-bottom: 30px; color: var(--ink); font-family: "Noto Serif TC", serif; }
 .hero-desc { color: var(--muted); font-size: 1rem; max-width: 400px; line-height: 1.8; margin-bottom: 60px; }
@@ -113,11 +84,7 @@ button { font: inherit; color: inherit; }
 
 /* 疊加的精選卡片 */
 .featured-card { position: relative; z-index: 2; width: 340px; background: var(--surface); box-shadow: var(--shadow); padding: 0; transform: translateY(20px); }
-.fc-img {
-  width: 100%; height: 260px; background-color: #ececec; display: flex; align-items: center; justify-content: center; overflow: hidden;
-  background-image: url('card.jpg'); /* 本地讀取卡片小圖 */
-  background-size: cover; background-position: center;
-}
+.fc-img { width: 100%; height: 260px; background-color: #ececec; display: flex; align-items: center; justify-content: center; overflow: hidden; background-image: url('card.jpg'); background-size: cover; background-position: center; }
 .fc-img::after { content: "P."; font-family: "Playfair Display", serif; font-size: 100px; color: #fff; opacity: 0.3; font-style: italic; }
 .fc-content { padding: 40px; }
 .fc-title { font-family: "Noto Serif TC", serif; font-size: 1.2rem; letter-spacing: 0.05em; margin-bottom: 15px; }
@@ -276,7 +243,10 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
   .hero-right { min-height: 400px; }
   .hero-title { font-size: 3rem; }
   
+  .hamburger { display: block; }
   .navlinks { display: none; }
+  .nav-back { display: none; }
+  .logo-group { gap: 0; }
   .nav-contact { border-left: none; padding-left: 0; }
   
   .filters { flex-wrap: wrap; gap: 15px; }
@@ -304,6 +274,18 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
 <body>
 <div id="app"><div class="container"><p style="padding: 100px 0; text-align: center; color: var(--muted); font-family:'Playfair Display', serif; letter-spacing: 0.1em;">INITIALIZING SYSTEM...</p></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
+
+<!-- 安裝引導 Modal -->
+<div id="install-modal" class="install-modal">
+  <div class="im-content">
+    <h3 class="serif" style="margin-bottom:15px; font-size:1.5rem;">安裝為原生 App</h3>
+    <p style="color:var(--muted); font-size:0.95rem; line-height:1.6; margin-bottom:25px;">
+      iOS 用戶請點擊底部工具列的「分享」圖示 ⍗，選擇<strong>「加入主畫面」</strong>。<br><br>
+      Android 用戶請點擊右上角「選單 ⋮」，選擇<strong>「加到主畫面」</strong>。
+    </p>
+    <button class="btn primary block" onclick="document.getElementById('install-modal').classList.remove('show')">我知道了</button>
+  </div>
+</div>
 
 <!-- 外部元件庫 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -606,7 +588,7 @@ async function imageToBytes(file){
   return { bytes:new Uint8Array(await blob.arrayBuffer()), kind:isPng ? 'png' : 'jpg', w, h };
 }
 
-/* --- 版面導航系統 --- */
+/* --- 版面導航系統與左拉選單 --- */
 function navToCat(cat) {
   homeFilter = cat;
   const section = $('.tools-section');
@@ -626,19 +608,39 @@ function navToCat(cat) {
 function topNav(isToolPage = false){
   const backBtn = isToolPage ? el('button', { class:'nav-back', type:'button', onclick:() => go(null) }, '← 返回首頁') : null;
   
-  return el('nav', { class:'topnav' }, el('div', { class:'container' },
-    el('div', { class:'logo-group' }, 
-      el('button', { class:'logo', type:'button', onclick:() => go(null) }, 'P.'), 
-      el('span', { class:'logo-dots' }, '::'),
-      backBtn,
-      el('div', { class:'navlinks' }, 
-        el('button', { type:'button', onclick:() => navToCat('org') }, '頁面整理'),
-        el('button', { type:'button', onclick:() => navToCat('edit') }, '編輯加工'),
-        el('button', { type:'button', onclick:() => navToCat('to') }, '格式轉換')
-      )
+  // 建立漢堡按鈕與左拉選單
+  const burger = el('button', { class:'hamburger', type:'button' }, '☰');
+  const drawer = el('div', { class:'mobile-drawer' },
+    el('button', { class:'drawer-close', onclick: () => closeDrawer() }, '✕'),
+    el('div', { class:'logo serif', style:'font-weight:700; margin-bottom: 20px;' }, 'P. 工具箱'),
+    el('button', { class:'drawer-link', onclick:() => { navToCat('org'); closeDrawer(); } }, '頁面整理'),
+    el('button', { class:'drawer-link', onclick:() => { navToCat('edit'); closeDrawer(); } }, '編輯加工'),
+    el('button', { class:'drawer-link', onclick:() => { navToCat('to'); closeDrawer(); } }, '格式轉換'),
+    el('button', { class:'drawer-link', style:'margin-top:auto; color:var(--ink); font-weight:700;', onclick: () => { document.getElementById('install-modal').classList.add('show'); closeDrawer(); } }, '⤓ 加到手機主畫面')
+  );
+  const overlay = el('div', { class:'drawer-overlay', onclick: () => closeDrawer() });
+  
+  function openDrawer() { drawer.classList.add('open'); overlay.classList.add('show'); }
+  function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('show'); }
+  burger.onclick = openDrawer;
+  
+  return el('nav', { class:'topnav' }, 
+    el('div', { class:'container' },
+      el('div', { class:'logo-group' }, 
+        burger,
+        el('button', { class:'logo', type:'button', onclick:() => go(null) }, 'P.'), 
+        el('span', { class:'logo-dots' }, '::'),
+        backBtn,
+        el('div', { class:'navlinks' }, 
+          el('button', { type:'button', onclick:() => navToCat('org') }, '頁面整理'),
+          el('button', { type:'button', onclick:() => navToCat('edit') }, '編輯加工'),
+          el('button', { type:'button', onclick:() => navToCat('to') }, '格式轉換')
+        )
+      ),
+      el('div', { style:'display:flex; height:100%; align-items:center;' }, el('button', { class:'nav-contact', type:'button', onclick:() => { document.getElementById('install-modal').classList.add('show'); } }, '加到主畫面') )
     ),
-    el('div', { style:'display:flex; height:100%; align-items:center;' }, el('button', { class:'nav-contact', type:'button', onclick:() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }, '探索更多') )
-  ));
+    drawer, overlay
+  );
 }
 
 function siteFoot(){
@@ -656,9 +658,10 @@ function toolShell(t, lede){
   setStep(1); return { page, stage, setStep };
 }
 
-/* 強化版 filePicker 支援開啟相機 */
+/* 強化版 filePicker (嚴格限制 accept 以優化 Android 相機喚醒) */
 function filePicker(accept, multiple, onFiles, capture){
-  const props = { type:'file', accept, multiple, class:'sr-only', tabindex:'-1', onchange:() => { const fs = [...input.files]; input.value = ''; if (fs.length) onFiles(fs); } };
+  const props = { type:'file', accept, class:'sr-only', tabindex:'-1', onchange:() => { const fs = [...input.files]; input.value = ''; if (fs.length) onFiles(fs); } };
+  if (multiple) props.multiple = true;
   if (capture) props.capture = capture;
   const input = el('input', props);
   return input;
@@ -670,7 +673,8 @@ function uploadCard({ accept, multiple, label, formats, onFiles, captureLabel, o
   const input = filePicker(accept, multiple, onFiles);
   let captureInput = null, captureBtn = null;
   if (captureLabel && onCapture) {
-     captureInput = filePicker(accept, false, onCapture, 'environment');
+     // 限制副檔名能大幅提高部分 Android 系統直接開啟相機的機率
+     captureInput = filePicker('image/jpeg,image/png,image/jpg', false, onCapture, 'environment');
      captureBtn = el('button', { class:'btn big', type:'button', onclick:() => captureInput.click() }, captureLabel);
   }
   const zone = el('div', { class:'dropzone' }, 
@@ -1155,7 +1159,8 @@ const VIEWS = {
       auto = AutoResult(viewer, async () => { if (!items.length) return null; for (const it of items) if (!it.bytes) it.bytes = await imageToBytes(it.file); return Core.imagesToPdf(items.filter(it => it.bytes).map(it => it.bytes), { size:'a4', orient:'auto', margin:36 }); }, ab);
       
       const more = filePicker('image/*', true, add);
-      const cam = filePicker('image/*', false, add, 'environment');
+      // 限制明確的圖片格式，幫助特定 Android 系統強制喚醒相機
+      const cam = filePicker('image/jpeg,image/png,image/jpg', false, add, 'environment');
       
       ws.main.append(
         el('h2', { class:'sec-title', text:'相片集' }), banner, list, 
