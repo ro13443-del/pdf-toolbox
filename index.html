@@ -41,6 +41,7 @@ button { font: inherit; color: inherit; }
 :focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
 .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 .serif { font-family: "Noto Serif TC", "Playfair Display", serif; }
+.d-none-mobile { display: block; }
 
 /* 導覽列與手機左拉選單 */
 .topnav { position: sticky; top: 0; z-index: 10; background: var(--surface); border-bottom: 1px solid var(--line); }
@@ -51,6 +52,8 @@ button { font: inherit; color: inherit; }
 .navlinks { display: flex; gap: 40px; margin-left: 60px; align-items: center; }
 .navlinks button { background: none; border: 0; padding: 0; cursor: pointer; font-weight: 400; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.1em; transition: color 0.3s; font-family: "Noto Serif TC", serif; }
 .navlinks button:hover { color: var(--ink); }
+.nav-back { background: none; border: 0; padding: 0; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--ink); letter-spacing: 0.05em; font-family: "Noto Serif TC", serif; display: flex; align-items: center; gap: 8px; }
+.nav-back:hover { opacity: 0.7; }
 .nav-contact { background: none; border: 0; font-weight: 600; font-size: 0.85rem; font-family: "Playfair Display", serif; letter-spacing: 0.05em; cursor: pointer; border-left: 1px solid var(--line); padding: 30px 0 30px 40px; height: 100%; display: flex; align-items: center; text-transform: uppercase; }
 
 /* 左拉選單 (Drawer) */
@@ -93,15 +96,23 @@ button { font: inherit; color: inherit; }
 .stamp { position: absolute; top: 40px; left: 40px; z-index: 3; width: 120px; height: 120px; animation: rotate 20s linear infinite; opacity: 0.3; pointer-events: none; }
 @keyframes rotate { 100% { transform: rotate(360deg); } }
 
-/* 首頁工具列表 */
+/* 首頁工具列表與分類膠囊按鈕 */
 .tools-section { background: var(--bg); padding: 100px 0; }
-.tools-header { text-align: center; margin-bottom: 80px; }
+.tools-header { text-align: center; margin-bottom: 50px; }
 .tools-header h2 { font-size: 2rem; letter-spacing: 0.05em; font-family: "Noto Serif TC", serif; }
 
-.filters { display: flex; justify-content: center; gap: 40px; margin-bottom: 60px; }
-.pill { background: none; border: none; font-size: 0.95rem; letter-spacing: 0.1em; color: var(--muted); cursor: pointer; padding: 10px 0; position: relative; font-family: "Noto Serif TC", serif; }
-.pill[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
-.pill[aria-pressed="true"]::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: var(--ink); }
+.filters { display: flex; justify-content: center; gap: 15px; margin-bottom: 60px; flex-wrap: wrap; }
+.pill { 
+  background: var(--surface); border: 1px solid var(--line); 
+  font-size: 0.95rem; letter-spacing: 0.1em; color: var(--muted); 
+  cursor: pointer; padding: 12px 28px; border-radius: 999px; 
+  font-family: "Noto Serif TC", serif; transition: all 0.3s;
+}
+.pill:hover { border-color: var(--ink); color: var(--ink); }
+.pill[aria-pressed="true"] { 
+  background: var(--ink); color: var(--surface); border-color: var(--ink); 
+  box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5); font-weight: 600;
+}
 
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
 .tile { background: var(--surface); padding: 40px; cursor: pointer; text-align: left; border: none; position: relative; transition: background 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 240px; }
@@ -127,7 +138,7 @@ button { font: inherit; color: inherit; }
 .dropzone { border: 1px dashed var(--line); padding: 80px 40px; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .dropzone.over { border-color: var(--ink); background: var(--bg-panel); }
 
-/* 按鈕與表單 (直角設計) */
+/* 按鈕與表單 */
 .btn { font-family: inherit; font-size: 0.9rem; letter-spacing: 0.05em; padding: 15px 30px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: all 0.3s; border-radius: 0; font-family: "Noto Sans TC", sans-serif; display: inline-flex; align-items: center; justify-content: center; gap: 8px;}
 .btn:hover:not(:disabled) { background: var(--bg-panel); }
 .btn.primary { background: var(--ink); color: #fff; }
@@ -240,6 +251,7 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
   .hero-left, .hero-right { flex: none; width: 100%; padding: 60px 30px; }
   .hero-right { min-height: 400px; }
   .hero-title { font-size: 3rem; }
+  .d-none-mobile { display: none !important; }
   
   .hamburger { display: block; }
   .navlinks { display: none; }
@@ -247,7 +259,8 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
   .logo-group { gap: 0; }
   .nav-contact { border-left: none; padding-left: 0; }
   
-  .filters { flex-wrap: wrap; gap: 15px; justify-content: flex-start; }
+  .filters { flex-wrap: wrap; gap: 10px; justify-content: flex-start; }
+  .pill { padding: 8px 18px; font-size: 0.85rem; }
   .featured-card { width: 100%; transform: translateY(0); margin-top: 40px; }
   
   .ws-pages, .ws-preview { grid-template-columns: 1fr; }
@@ -310,6 +323,57 @@ input[type=range] { accent-color: var(--ink); width: 100%; }
 
 <script>
 'use strict';
+
+/* --- 本機儲存 IndexedDB 系統 --- */
+const DB_NAME = 'P_PDF_Toolbox_DB';
+const STORE_NAME = 'savedFiles';
+let dbInstance = null;
+
+function getDB() {
+  if (dbInstance) return Promise.resolve(dbInstance);
+  return new Promise((resolve, reject) => {
+    try {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = e => { e.target.result.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true }); };
+      req.onsuccess = e => { dbInstance = e.target.result; resolve(dbInstance); };
+      req.onerror = e => reject(e);
+    } catch (e) { reject(e); }
+  });
+}
+
+async function saveToLocalDB(name, blob) {
+  const db = await getDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.add({ name, blob, date: Date.now(), size: blob.size });
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject();
+  });
+}
+
+async function getLocalDBFiles() {
+  const db = await getDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result.sort((a,b) => b.date - a.date));
+    req.onerror = () => reject();
+  });
+}
+
+async function deleteLocalDBFile(id) {
+  const db = await getDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject();
+  });
+}
+
 
 /* --- PDF-Lib 核心邏輯 --- */
 function makeCore(PDFLib){
@@ -477,7 +541,9 @@ async function saveFile(name, blob){
   const a = el('a', { href:url, download:name });
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 60000);
-  toast('已開始下載：' + name); return true;
+  toast('已下載並自動儲存至本機'); 
+  try { await saveToLocalDB(name, blob); } catch(e){} // 存入本機 IndexedDB
+  return true;
 }
 async function packFiles(files, zipName){
   if (files.length === 1) return files[0];
@@ -557,7 +623,7 @@ const FONT_STACK = '"Noto Serif TC", "Playfair Display", serif';
 const canvasPng = async c => new Uint8Array(await (await toBlob(c, 'image/png')).arrayBuffer());
 
 async function textStamp(text, { sizePt, color, angle, weight }){
-  try { await document.fonts.load(`${weight} ${sizePt}px ${FONT_STACK}`, text); } catch(e){}
+  try { await document.document.fonts.load(`${weight} ${sizePt}px ${FONT_STACK}`, text); } catch(e){}
   const probe = document.createElement('canvas').getContext('2d');
   probe.font = `${weight} ${sizePt}px ${FONT_STACK}`;
   const w1 = probe.measureText(text).width + sizePt * 0.2, h1 = sizePt * 1.35;
@@ -592,7 +658,6 @@ async function imageStamp(img, angle){
   return { png:await canvasPng(c), w:cw, h:ch, srcW:iw };
 }
 
-// 增強版 imageToBytes 支援旋轉圖片處理
 async function imageToBytes(file, rot = 0){
   const img = await loadImage(file);
   const k = Math.min(1, 4000 / Math.max(img.naturalWidth, img.naturalHeight));
@@ -602,7 +667,7 @@ async function imageToBytes(file, rot = 0){
   let rad = 0;
   if (rot) {
     rad = (rot % 360) * Math.PI / 180;
-    if (rot % 180 !== 0) { const tmp = w; w = h; h = tmp; } // 交換長寬
+    if (rot % 180 !== 0) { const tmp = w; w = h; h = tmp; }
   }
   
   c.width = w; c.height = h;
@@ -649,7 +714,7 @@ function topNav(isToolPage = false){
     el('button', { class:'drawer-link', onclick:() => { navToCat('org'); closeDrawer(); } }, '頁面整理'),
     el('button', { class:'drawer-link', onclick:() => { navToCat('edit'); closeDrawer(); } }, '編輯加工'),
     el('button', { class:'drawer-link', onclick:() => { navToCat('to'); closeDrawer(); } }, '格式轉換'),
-    el('button', { class:'drawer-link', style:'margin-top:auto; color:var(--ink); font-weight:700;', onclick: () => { document.getElementById('install-modal').classList.add('show'); closeDrawer(); } }, '⤓ 加到主畫面')
+    el('button', { class:'drawer-link', style:'margin-top:auto; color:var(--ink); font-weight:700;', onclick: () => { document.getElementById('install-modal').classList.add('show'); closeDrawer(); } }, '⤓ 加到手機主畫面')
   );
   const overlay = el('div', { class:'drawer-overlay', onclick: () => closeDrawer() });
   
@@ -687,7 +752,6 @@ function toolShell(t, lede){
   const steps = ['選擇檔案', '預覽設定', '下載完成'].map((s, i) => el('li', { class:'step' }, el('span', { class:'serif' }, String(i + 1) + '.'), s));
   const stage = el('div', { class:'stage' });
   
-  // 顯眼的返回按鈕區塊
   const backBtnContainer = el('div', { class:'container', style:'padding-bottom: 10px; display:flex; justify-content: flex-start;' },
       el('button', { class:'btn', style:'padding:10px 20px; display:flex; align-items:center; gap:8px; font-weight:600;', type:'button', onclick:() => go(null) }, '← 返回工具列表')
   );
@@ -724,8 +788,10 @@ function uploadCard({ accept, multiple, label, formats, onFiles, captureLabel, o
      captureInput = filePicker('image/jpeg,image/png,image/jpg', false, onCapture, 'environment');
      captureBtn = el('button', { class:'btn big', type:'button', onclick:() => captureInput.click() }, captureLabel);
   }
+  const dropText = el('div', { class:'serif d-none-mobile', style:'font-size:2rem; color:var(--line); margin-bottom: 20px; letter-spacing:0.05em;'}, 'Drop files here');
+  
   const zone = el('div', { class:'dropzone' }, 
-    el('div', { class:'serif', style:'font-size:2rem; color:var(--line); margin-bottom: 20px; letter-spacing:0.05em;'}, 'Drop files here'),
+    dropText,
     el('div', { style:'display:flex; gap:15px; flex-wrap:wrap; justify-content:center;' },
       el('button', { class:'btn primary big', type:'button', onclick:() => input.click() }, label),
       captureBtn
@@ -733,7 +799,7 @@ function uploadCard({ accept, multiple, label, formats, onFiles, captureLabel, o
     formats ? el('p', { style:'margin-top:20px; font-size:0.85rem; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;'}, formats) : null, 
     input, captureInput);
   zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+  zone.addEventListener('dragleave', () => zone.classList.remove('over'););
   zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); const fs = [...(e.dataTransfer ? e.dataTransfer.files : [])]; if (fs.length) onFiles(multiple ? fs : [fs[0]]); });
   const node = el('div', { class:'card upload' }, zone, msg); node.msg = msg; return node;
 }
@@ -800,7 +866,6 @@ function AutoResult(viewer, build, ab){
 function select(options, value){ const s = el('select'); options.forEach(([v, text]) => s.append(el('option', { value:v, text }))); s.value = value; return s; }
 function field(label, control, hint){ const id = 'f' + Math.random().toString(36).slice(2, 8); control.id = id; return el('div', { class:'field' }, el('label', { for:id, text:label }), control, hint ? el('p', { class:'hint', style:'font-size:0.85rem; margin-top:8px; color:var(--muted);', text:hint }) : null); }
 function segmented(opts, value, onchange){ const wrap = el('div', { class:'seg', role:'group' }); const btns = opts.map(([v, t]) => el('button', { type:'button', 'aria-pressed':String(v === value), onclick:() => { btns.forEach(b => b.setAttribute('aria-pressed', String(b === btns[opts.findIndex(o => o[0] === v)]))); onchange(v); } }, t)); wrap.append(...btns); return wrap; }
-function radioGroup(name, opts, value, onchange){ const wrap = el('div', { role:'radiogroup' }); opts.forEach(([v, title, desc, extra]) => { const input = el('input', { type:'radio', name, value:v, checked:v === value, onchange:() => onchange(v) }); wrap.append(el('label', { class:'choice' }, input, el('span', { style:'flex:1;min-width:0' }, el('b', { text:title }), desc ? el('span', { class:'hint', style:'display:block; margin-top:5px; font-size:0.85rem; color:var(--muted);', text:desc }) : null, extra || null))); }); return wrap; }
 
 function mkLabel(text, rightEl) {
   return el('div', { style:'display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;' }, el('label', { class:'flabel', style:'margin-bottom:0;', text:text }), rightEl);
@@ -1206,24 +1271,11 @@ const VIEWS = {
       
       auto = AutoResult(viewer, async () => { 
         if (!items.length) return null; 
-        for (const it of items) {
-           if (!it.bytes) it.bytes = (await imageToBytes(it.file, it.rot)).bytes; 
-        }
-        return Core.imagesToPdf(items.filter(it => it.bytes).map(it => ({bytes: it.bytes, kind: /\.png$/i.test(it.file.name)?'png':'jpg', w:1, h:1})), { size:'a4', orient:'auto', margin:36 }); 
-        // 註: imagesToPdf 內部已不依賴 it.w/it.h 進行 fit 縮放，而是直接嵌入
-      }, ab);
-      
-      // 修復：修改 imagesToPdf 傳遞結構
-      auto = AutoResult(viewer, async () => { 
-        if (!items.length) return null; 
         const processedImgs = [];
         for (const it of items) {
            if (!it.bytes) {
                const res = await imageToBytes(it.file, it.rot);
-               it.bytes = res.bytes;
-               it.w = res.w;
-               it.h = res.h;
-               it.kind = res.kind;
+               it.bytes = res.bytes; it.w = res.w; it.h = res.h; it.kind = res.kind;
            }
            processedImgs.push({ bytes: it.bytes, kind: it.kind, w: it.w, h: it.h });
         }
@@ -1297,7 +1349,8 @@ const VIEWS = {
       } catch(e) { setMsg(up.msg, errText(e), 'err'); return; }
       
       const card = el('div', { class:'card ws ws-preview' }); const main = el('div', { class:'ws-main' }); const side = el('div', { class:'ws-side', style:'padding:40px; display:grid; place-items:center; align-content:center;' });
-      const pvImg = el('img', { src: srcCanvas.toDataURL('image/jpeg', 0.8), style:'max-width:100%; max-height: 400px; box-shadow:var(--shadow);' }); side.append(pvImg);
+      const pvImg = el('img', { src: srcCanvas.toDataURL('image/jpeg', 0.8), style:'max-width:100%; max-height: 400px; box-shadow:var(--shadow); transition:transform 0.3s;' }); 
+      side.append(pvImg);
       
       const status = el('div', { class:'serif', style:'color:var(--muted); margin-bottom:15px; font-size: 0.95rem;' }, '就緒，請點擊開始識別。');
       const ta = el('textarea', { class:'input', style:'min-height: 350px;' }); 
@@ -1335,6 +1388,47 @@ const VIEWS = {
 
 /* --- 首頁與初始化 --- */
 let homeFilter = 'all';
+
+function renderLocalFiles(container) {
+  getLocalDBFiles().then(files => {
+    if (!files || files.length === 0) {
+      container.style.display = 'none'; return;
+    }
+    container.style.display = 'block';
+    
+    const list = el('div', { style:'display:grid; gap:15px;' });
+    files.forEach(f => {
+      const d = new Date(f.date).toLocaleString();
+      const item = el('div', { class:'item', style:'display:flex; justify-content:space-between; flex-wrap:wrap; gap:15px;' },
+         el('div', {}, 
+            el('b', { style:'font-family:"Noto Serif TC", serif; font-size:1.1rem;'}, f.name),
+            el('div', { style:'font-size:0.85rem; color:var(--muted); margin-top:5px;'}, `${d} · ${fmtSize(f.size)}`)
+         ),
+         el('div', { style:'display:flex; gap:10px;'},
+            el('button', { class:'btn', style:'padding:8px 15px;', onclick:() => {
+                const url = URL.createObjectURL(f.blob);
+                const a = el('a', { href:url, download:f.name });
+                document.body.append(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            }}, '重新下載'),
+            el('button', { class:'btn warn', style:'padding:8px 15px;', onclick: async () => {
+                if(confirm('確定要刪除這個已儲存的檔案嗎？')) { await deleteLocalDBFile(f.id); renderLocalFiles(container); }
+            }}, '刪除')
+         )
+      );
+      list.append(item);
+    });
+    
+    container.replaceChildren(
+      el('div', { class: 'tools-header', style:'margin-bottom:30px; text-align:left; border-bottom:1px solid var(--line); padding-bottom:15px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;' }, 
+          el('h2', { class: 'serif', style:'font-size:1.5rem; margin:0;' }, '本機檔案庫'),
+          el('span', { style:'font-size:0.85rem; color:var(--muted);' }, '檔案僅安全存放於此瀏覽器中')
+      ),
+      list
+    );
+  });
+}
+
 function home(){
   const hero = el('section', { class: 'editorial-hero' },
     el('div', { class: 'hero-left' },
@@ -1351,19 +1445,28 @@ function home(){
       )
     )
   );
-  const toolsContainer = el('div', { class: 'container' }); const filters = el('div', { class: 'filters' });
+  
+  const toolsContainer = el('div', { class: 'container' }); 
+  const filters = el('div', { class: 'filters' });
   ['all', 'org', 'edit', 'to', 'ocr'].forEach(k => { filters.append(el('button', { class: 'pill', 'aria-pressed': String(homeFilter === k), onclick: () => { homeFilter = k; renderTiles(); } }, k === 'all' ? '全部工具' : CATS[k].name)); });
-  const tilesGrid = el('div', { class: 'tiles' });
+  
+  const tilesGrid = el('div', { class: 'tiles', style:'margin-bottom:60px;' });
   function renderTiles() {
     tilesGrid.replaceChildren(...TOOLS.filter(t => homeFilter === 'all' || homeFilter === t.cat).map(t => el('button', { class: 'tile', onclick: () => go(t.id) }, el('div', { class: 'tile-head' }, el('span', { class: 'tile-title' }, t.name), t.isNew ? el('span', { class:'new' }, 'New') : null ), el('span', { class: 'tile-desc' }, t.desc) )));
     [...filters.children].forEach(btn => btn.setAttribute('aria-pressed', String(btn.textContent === (homeFilter==='all' ? '全部工具' : CATS[homeFilter].name))));
   }
-  toolsContainer.append(el('div', { class: 'tools-header' }, el('h2', { class: 'serif' }, '工具系列')), filters, tilesGrid);
+  
+  const localFilesSection = el('div', { style:'display:none; padding-top:40px;' });
+  renderLocalFiles(localFilesSection);
+  
+  toolsContainer.append(el('div', { class: 'tools-header' }, el('h2', { class: 'serif' }, '工具系列')), filters, tilesGrid, localFilesSection);
   renderTiles();
   return el('div', {}, topNav(), hero, el('section', { class: 'tools-section' }, toolsContainer), siteFoot());
 }
 function libError(){ return el('div', { class:'container', style:'padding-top:100px; text-align:center;' }, el('h1', { class:'serif', text:'系統無法連線' }), el('p', { style:'color:var(--muted); margin-top: 20px;', text:'必備的程式庫無法載入，請確認您的網路連線後重新整理頁面。' })); }
 function go(id){ stopLoaders(); const app = $('#app'); if (!LIBS_OK){ app.replaceChildren(libError()); return; } const t = TOOLS.find(x => x.id === id); app.replaceChildren(t ? VIEWS[id](t) : home()); window.scrollTo(0, 0); }
+
+// 初始化
 setTimeout(() => go(null), 150);
 </script>
 </body>
