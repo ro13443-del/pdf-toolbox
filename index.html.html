@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>P. :: PDF 工具箱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #dbdbdb; 
+  --bg-panel: #f2f2f2;
+  --surface: #ffffff; 
+  --ink: #1a1a1a; 
+  --muted: #757575; 
+  --line: #cccccc; 
+  --focus: #1a1a1a;
+  --paper-stage: #e8e8e8;
+  
+  --ok: #1a1a1a; --ok-soft: #f0f0f0; 
+  --err: #9e2a2b; --err-soft: #fbebeb; 
+  --warn: #a67c00; --warn-soft: #fffdf0;
+  
+  --accent: #1a1a1a; 
+  --tint: #f8f8f8;
+  --shadow: 0 20px 40px -20px rgba(0,0,0,0.15);
+  
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 基礎設定 */
+html { scroll-padding-top: 80px; scroll-behavior: smooth; }
+*, *::before, *::after { box-sizing: inherit; }
+[hidden] { display: none !important; }
+body { 
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: "Noto Sans TC", "Helvetica Neue", Arial, sans-serif; 
+  font-size: 15px; line-height: 1.6; 
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
+.container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+.serif { font-family: "Noto Serif TC", "Playfair Display", serif; }
+
+/* 導覽列 (極簡明體) */
+.topnav { 
+  position: sticky; top: 0; z-index: 10; 
+  background: var(--surface); 
+  border-bottom: 1px solid var(--line);
+}
+.topnav .container { height: 80px; display: flex; align-items: center; justify-content: space-between; }
+.logo-group { display: flex; align-items: center; gap: 40px; }
+.logo { 
+  font-family: "Playfair Display", "Noto Serif TC", serif;
+  font-weight: 700; font-size: 1.5rem; 
+  background: none; border: 0; cursor: pointer; padding: 0; letter-spacing: 0.05em;
+}
+.logo-dots { font-size: 1.2rem; color: var(--ink); letter-spacing: 2px; }
+.navlinks { display: flex; gap: 40px; margin-left: 60px; align-items: center; }
+.navlinks button { 
+  background: none; border: 0; padding: 0; cursor: pointer; 
+  font-weight: 400; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.1em;
+  transition: color 0.3s; font-family: "Noto Serif TC", serif;
+}
+.navlinks button:hover { color: var(--ink); }
+.nav-back {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font-weight: 600; font-size: 0.9rem; color: var(--ink); letter-spacing: 0.05em;
+  font-family: "Noto Serif TC", serif; display: flex; align-items: center; gap: 8px;
+}
+.nav-back:hover { opacity: 0.7; }
+.nav-contact {
+  background: none; border: 0; font-weight: 600; font-size: 0.85rem; font-family: "Playfair Display", serif;
+  letter-spacing: 0.05em; cursor: pointer; border-left: 1px solid var(--line);
+  padding: 30px 0 30px 40px; height: 100%; display: flex; align-items: center; text-transform: uppercase;
+}
+
+/* 首頁畫冊風格 (Hero Section) */
+.editorial-hero { display: flex; min-height: calc(100vh - 80px); background: var(--bg); overflow: hidden; }
+.hero-left { 
+  flex: 0 0 45%; background: var(--bg-panel); 
+  padding: 100px 80px; display: flex; flex-direction: column; justify-content: center;
+}
+.hero-right {
+  flex: 1; position: relative; background-color: #e0e0e0;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  background-image: url('bg.jpg'); /* 本地讀取背景圖片 */
+  background-size: cover; background-position: center;
+}
+.hero-right::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(232,232,232,0.75) 0%, rgba(213,213,213,0.9) 100%); z-index: 0;
+}
+.hero-subtitle { font-size: 0.85rem; letter-spacing: 0.2em; color: var(--ink); margin-bottom: 20px; font-family: "Playfair Display", serif; text-transform: uppercase; opacity: 0.8;}
+.hero-title { font-size: 4vw; font-weight: 500; line-height: 1.2; letter-spacing: 0.05em; margin-bottom: 30px; color: var(--ink); font-family: "Noto Serif TC", serif; }
+.hero-desc { color: var(--muted); font-size: 1rem; max-width: 400px; line-height: 1.8; margin-bottom: 60px; }
+.hero-discover { display: flex; align-items: center; gap: 20px; }
+.outline-text { font-family: "Playfair Display", serif; font-size: 4rem; font-weight: 400; letter-spacing: 0.05em; color: transparent; -webkit-text-stroke: 1px rgba(0,0,0,0.2); text-transform: uppercase; }
+.thin-arrow { font-size: 3rem; font-weight: 100; color: rgba(0,0,0,0.2); margin-top: 10px; }
+
+/* 疊加的精選卡片 */
+.featured-card { position: relative; z-index: 2; width: 340px; background: var(--surface); box-shadow: var(--shadow); padding: 0; transform: translateY(20px); }
+.fc-img {
+  width: 100%; height: 260px; background-color: #ececec; display: flex; align-items: center; justify-content: center; overflow: hidden;
+  background-image: url('card.jpg'); /* 本地讀取卡片小圖 */
+  background-size: cover; background-position: center;
+}
+.fc-img::after { content: "P."; font-family: "Playfair Display", serif; font-size: 100px; color: #fff; opacity: 0.3; font-style: italic; }
+.fc-content { padding: 40px; }
+.fc-title { font-family: "Noto Serif TC", serif; font-size: 1.2rem; letter-spacing: 0.05em; margin-bottom: 15px; }
+.fc-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 30px; }
+.fc-link { font-size: 0.8rem; letter-spacing: 0.1em; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--muted); text-decoration: none; border: none; background: none; padding: 0; }
+.fc-link:hover { color: var(--ink); }
+
+.stamp { position: absolute; top: 40px; left: 40px; z-index: 3; width: 120px; height: 120px; animation: rotate 20s linear infinite; opacity: 0.3; pointer-events: none; }
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+
+/* 首頁工具列表 */
+.tools-section { background: var(--bg); padding: 100px 0; }
+.tools-header { text-align: center; margin-bottom: 80px; }
+.tools-header h2 { font-size: 2rem; letter-spacing: 0.05em; font-family: "Noto Serif TC", serif; }
+
+.filters { display: flex; justify-content: center; gap: 40px; margin-bottom: 60px; }
+.pill { background: none; border: none; font-size: 0.95rem; letter-spacing: 0.1em; color: var(--muted); cursor: pointer; padding: 10px 0; position: relative; font-family: "Noto Serif TC", serif; }
+.pill[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+.pill[aria-pressed="true"]::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: var(--ink); }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.tile { background: var(--surface); padding: 40px; cursor: pointer; text-align: left; border: none; position: relative; transition: background 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 240px; }
+.tile:hover { background: var(--bg-panel); }
+.tile-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;}
+.tile-title { font-family: "Noto Serif TC", serif; font-size: 1.25rem; font-weight: 600; letter-spacing: 0.05em; display: block;}
+.tile-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+.tile .new { font-size: 0.65rem; letter-spacing: 0.1em; border: 1px solid var(--ink); padding: 2px 6px; font-family: "Playfair Display", serif;}
+
+/* 內部工具頁 */
+.tool-page { background: var(--bg); min-height: 100vh; }
+.thero { padding: 80px 0; text-align: center; border-bottom: 1px solid var(--line); background: var(--bg-panel); }
+.thero h1 { font-family: "Noto Serif TC", serif; font-size: 2.5rem; letter-spacing: 0.05em; margin-bottom: 15px; }
+.thero .lede { color: var(--muted); font-size: 1rem; max-width: 600px; margin: 0 auto; line-height: 1.8; }
+.steps { list-style: none; display: flex; justify-content: center; gap: 40px; padding: 0; margin: 40px 0 0; }
+.step { font-size: 0.9rem; letter-spacing: 0.05em; color: var(--muted); display: flex; align-items: center; gap: 10px; font-family: "Noto Serif TC", serif;}
+.step.on { color: var(--ink); font-weight: 600; }
+.step.done { color: var(--ink); }
+
+.stage { max-width: 1200px; margin: 60px auto; padding: 0 40px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 0; box-shadow: var(--shadow); }
+.upload { padding: 60px; text-align: center; }
+.dropzone { border: 1px dashed var(--line); padding: 80px 40px; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.dropzone.over { border-color: var(--ink); background: var(--bg-panel); }
+
+/* 按鈕與表單 (直角設計) */
+.btn { font-family: inherit; font-size: 0.9rem; letter-spacing: 0.05em; padding: 15px 30px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: all 0.3s; border-radius: 0; font-family: "Noto Sans TC", sans-serif; }
+.btn:hover:not(:disabled) { background: var(--bg-panel); }
+.btn.primary { background: var(--ink); color: #fff; }
+.btn.primary:hover:not(:disabled) { background: #333; }
+.btn.big { padding: 20px 40px; }
+.btn.block { width: 100%; }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn.warn { border-color: var(--warn); color: var(--warn); }
+.btn.link { border: 0; background: none; color: var(--ink); padding: 6px 0; text-decoration: underline; text-underline-offset: 4px; }
+
+.input, select, textarea { font: inherit; padding: 12px 15px; border: 1px solid var(--line); background: var(--surface); border-radius: 0; width: 100%; transition: border-color 0.3s; min-height: 48px; }
+.input:focus, select:focus, textarea:focus { border-color: var(--ink); outline: none; }
+.field { margin-bottom: 25px; }
+.field > label, .flabel { display: block; font-size: 0.9rem; letter-spacing: 0.05em; margin-bottom: 10px; color: var(--muted); font-family: "Noto Serif TC", serif; }
+.choice { display: flex; gap: 15px; align-items: flex-start; padding: 20px; border: 1px solid var(--line); margin-bottom: 10px; cursor: pointer; transition: all 0.3s; }
+.choice:hover { background: var(--bg-panel); }
+.choice:has(input:checked) { border-color: var(--ink); }
+.choice input { margin-top: 4px; accent-color: var(--ink); width: 18px; height: 18px; }
+.check { display: flex; gap: 10px; align-items: center; cursor: pointer; min-height: 44px; margin-bottom:10px; }
+.check input { width: 18px; height: 18px; accent-color: var(--ink); }
+input[type=range] { accent-color: var(--ink); width: 100%; }
+.seg { display: flex; border: 1px solid var(--line); padding: 2px; gap: 2px; background: var(--bg-panel); }
+.seg button { flex: 1; border: 0; background: none; padding: 10px; cursor: pointer; font-size: 0.9rem; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* 工作區與預覽 */
+.ws { display: grid; overflow: hidden; }
+.ws-pages { grid-template-columns: minmax(0,1fr) 420px; }
+.ws-preview { grid-template-columns: 500px minmax(0,1fr); }
+.ws-main { padding: 40px; border-right: 1px solid var(--line); min-width: 0; }
+.ws-side { background: var(--bg-panel); display: flex; flex-direction: column; min-width: 0; }
+.ws-preview .ws-main { border-right: none; border-left: 1px solid var(--line); order: 2; }
+.ws-preview .ws-side { order: 1; border-right: none; }
+
+.sec-title { font-family: "Noto Serif TC", serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 25px; letter-spacing: 0.05em; }
+.filehead { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 30px; }
+.filehead .nm { font-weight: 600; font-family: "Noto Serif TC", serif; font-size: 1.1rem; }
+.filehead .mt { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+.viewer { flex: 1; display: flex; flex-direction: column; padding: 40px; gap: 20px; min-height: 420px; }
+.vcap { font-size: 0.9rem; letter-spacing: 0.05em; color: var(--muted); display: flex; justify-content: space-between; font-family: "Noto Serif TC", serif; }
+.vstage { flex: 1; background: var(--paper-stage); display: grid; place-items: center; padding: 20px; position: relative; min-height: 400px; overflow: hidden; border: 1px solid var(--line); }
+.vstage canvas { display: block; max-width: 100%; height: auto !important; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.vnav { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.vbtn { width: 40px; height: 40px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; display: grid; place-items: center; transition: background 0.3s; font-size: 1.2rem; }
+.vbtn:hover:not(:disabled) { background: var(--bg-panel); }
+.vlabel { font-size: 0.9rem; letter-spacing: 0.1em; font-family: "Playfair Display", serif;}
+.actionbar { padding: 40px; border-top: 1px solid var(--line); background: var(--surface); }
+
+/* 縮圖與列表清單 */
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+.thumb { border: 1px solid transparent; padding: 10px; text-align: center; cursor: pointer; position: relative; transition: all 0.2s; background: var(--surface); }
+.thumb .img { height: 160px; display: grid; place-items: center; background: var(--bg-panel); margin-bottom: 10px; }
+.thumb canvas, .thumb img.pv { max-width: 100%; max-height: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.thumb .label { font-size: 0.85rem; color: var(--muted); font-family: "Noto Serif TC", serif; }
+.thumb.sel { border-color: var(--ink); background: var(--tint); }
+.thumb.del { opacity: 0.4; }
+.thumb .dup { position: absolute; top: 15px; left: 15px; font-size: 0.75rem; background: var(--warn); color: #fff; padding: 2px 8px; }
+.thumb.isdup { border-color: var(--warn); }
+.thumb .ctls { display: flex; gap: 5px; margin-top: 8px; justify-content: center; }
+.ctl { width: 32px; height: 32px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+.ctl:hover:not(:disabled) { border-color: var(--ink); }
+
+.list { display: grid; gap: 10px; }
+.item { display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid var(--line); background: var(--surface); }
+.item .mini { width: 50px; height: 70px; background: var(--bg-panel); display: grid; place-items: center; flex: none; }
+.item .mini canvas { max-width: 100%; max-height: 100%; }
+.item .pos { font-family: "Playfair Display", serif; font-size: 1.2rem; width: 30px; text-align: center; }
+.addmore { margin-top: 20px; border: 1px dashed var(--line); padding: 20px; text-align: center; cursor: pointer; background: none; width: 100%; color: var(--ink); font-family: "Noto Serif TC", serif; font-size: 1rem; transition: background 0.3s; }
+.addmore:hover { background: var(--bg-panel); }
+
+/* 訊息與橫幅 */
+.msg { white-space: pre-line; margin-top: 20px; font-size: 0.9rem; }
+.msg.err { color: var(--err); }
+.msg.info { color: var(--muted); }
+.banner { padding: 15px 20px; border: 1px solid var(--line); margin-bottom: 20px; font-size: 0.9rem; display: none; }
+.banner.show { display: flex; align-items: center; justify-content: space-between; }
+.banner.warn { border-color: var(--warn); color: var(--warn); background: var(--warn-soft); }
+.banner.ok { background: var(--ok-soft); border-color: var(--ok); }
+.note { font-size: 0.85rem; color: var(--muted); background: var(--bg-panel); padding: 15px; line-height: 1.6; border-left: 3px solid var(--line); }
+
+/* OCR 專屬 */
+.ocr-page { margin-top: 20px; border: 1px solid var(--line); background: var(--surface); }
+.ocr-page .h { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid var(--line); background: var(--bg-panel); font-family: "Noto Serif TC", serif; }
+.ocr-page textarea { border: 0; min-height: 250px; padding: 20px; resize: vertical; }
+
+.sitefoot { padding: 80px 0 60px; border-top: 1px solid var(--line); background: var(--surface); margin-top: 100px; }
+.sitefoot .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; }
+.sitefoot .logo { font-size: 1.5rem; margin-bottom: 15px; }
+.sitefoot ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px 40px; }
+.sitefoot a, .sitefoot button { background: none; border: 0; color: var(--muted); font-size: 0.9rem; letter-spacing: 0.05em; cursor: pointer; padding: 0; font-family: "Noto Serif TC", serif; text-align: left; }
+.sitefoot a:hover, .sitefoot button:hover { color: var(--ink); }
+
+#toast { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 15px 30px; font-size: 0.9rem; letter-spacing: 0.05em; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; font-family: "Noto Serif TC", serif; }
+#toast.show { opacity: 1; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.render-host { position: absolute; left: -100000px; top: 0; background: #fff; color: #000; }
+.sheet { font-family: "Noto Sans TC", sans-serif; color: #000; background: #fff; display: inline-block; min-width: 100%; }
+.sheet h2 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+.sheet table { border-collapse: collapse; table-layout: fixed; }
+.sheet td { padding: 1px 4px; line-height: 1.25; vertical-align: bottom; overflow: visible; color: #000; }
+</style>
+</head>
+<body>
+<div id="app"><div class="container"><p style="padding: 100px 0; text-align: center; color: var(--muted); font-family:'Playfair Display', serif; letter-spacing: 0.1em;">INITIALIZING SYSTEM...</p></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- 外部元件庫 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<!-- Tesseract.js 用於離線 OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+'use strict';
+
+/* --- PDF-Lib 核心邏輯 --- */
+function makeCore(PDFLib){
+  const { PDFDocument, degrees, pushGraphicsState, popGraphicsState, concatTransformationMatrix } = PDFLib;
+  class UserError extends Error {}
+  const norm = a => (((Math.round(a / 90) * 90) % 360) + 360) % 360;
+  async function load(bytes){
+    try { return await PDFDocument.load(bytes, { updateMetadata:false }); }
+    catch(e){ throw new UserError('這個檔案無法讀取，可能受密碼保護或已損壞。'); }
+  }
+  async function merge(list, onProgress){
+    const out = await PDFDocument.create();
+    for (let k = 0; k < list.length; k++){
+      if (onProgress) onProgress(k + 1, list.length);
+      const src = await load(list[k]);
+      const pages = await out.copyPages(src, src.getPageIndices());
+      pages.forEach(p => out.addPage(p));
+    }
+    return out.save();
+  }
+  function addRotation(page, add){ if (add) page.setRotation(degrees(norm(page.getRotation().angle + add))); }
+  async function pick(bytes, items){
+    const src = await load(bytes); const out = await PDFDocument.create();
+    const pages = await out.copyPages(src, items.map(x => x.i));
+    pages.forEach((p, k) => { addRotation(p, items[k].rot || 0); out.addPage(p); });
+    return out.save();
+  }
+  async function pickMany(bytes, groups, onProgress){
+    const src = await load(bytes); const results = [];
+    for (let g = 0; g < groups.length; g++){
+      if (onProgress) onProgress(g + 1, groups.length);
+      const out = await PDFDocument.create();
+      const pages = await out.copyPages(src, groups[g]);
+      pages.forEach(p => out.addPage(p)); results.push(await out.save());
+    }
+    return results;
+  }
+  function parseRanges(str, max){
+    const text = String(str || '').replace(/[，、；;]/g, ',').replace(/[～~–—－]/g, '-').replace(/\s+/g, '');
+    if (!text) throw new UserError('請輸入頁碼，例如：1-3, 5');
+    const groups = [];
+    for (const part of text.split(',')){
+      if (!part) continue;
+      const m = part.match(/^(\d+)(?:-(\d+))?$/);
+      if (!m) throw new UserError(`「${part}」格式錯誤，請用像「1-3, 5」的寫法。`);
+      const a = parseInt(m[1], 10), b = m[2] ? parseInt(m[2], 10) : a;
+      if (a < 1 || b < 1 || a > max || b > max) throw new UserError(`「${part}」超出範圍，這份檔案只有 ${max} 頁。`);
+      if (a > b) throw new UserError(`「${part}」起點要小於終點，例如「3-5」。`);
+      const g = []; for (let i = a; i <= b; i++) g.push(i - 1); groups.push(g);
+    }
+    if (!groups.length) throw new UserError('請輸入頁碼。');
+    return groups;
+  }
+  function visualMatrix(R, box){
+    const { x, y, width:W, height:H } = box;
+    switch (R){
+      case 90:  return [0, 1, -1, 0, x + W, y];
+      case 180: return [-1, 0, 0, -1, x + W, y + H];
+      case 270: return [0, -1, 1, 0, x, y + H];
+      default:  return [1, 0, 0, 1, x, y];
+    }
+  }
+  async function stamp(bytes, fn, onProgress){
+    const doc = await load(bytes); const pages = doc.getPages(); const cache = new Map();
+    for (let i = 0; i < pages.length; i++){
+      if (onProgress) onProgress(i + 1, pages.length);
+      const page = pages[i]; const box = page.getCropBox(); const R = norm(page.getRotation().angle);
+      const vw = (R % 180) ? box.height : box.width, vh = (R % 180) ? box.width : box.height;
+      const items = await fn(i, pages.length, vw, vh);
+      if (!items || !items.length) continue;
+      try {
+        page.node.normalize();
+        const start = doc.context.register(doc.context.contentStream([pushGraphicsState()]));
+        const end = doc.context.register(doc.context.contentStream([popGraphicsState()]));
+        page.node.wrapContentStreams(start, end);
+      } catch(e){}
+      page.pushOperators(pushGraphicsState(), concatTransformationMatrix(...visualMatrix(R, box)));
+      for (const it of items){
+        let img = cache.get(it.key);
+        if (!img){ img = await doc.embedPng(it.png); cache.set(it.key, img); }
+        page.drawImage(img, { x:it.x, y:it.y, width:it.w, height:it.h, opacity: it.opacity == null ? 1 : it.opacity });
+      }
+      page.pushOperators(popGraphicsState());
+    }
+    return doc.save();
+  }
+  async function imagesToPdf(imgs, opts, onProgress){
+    const doc = await PDFDocument.create(); const A4 = [595.28, 841.89]; const m = opts.margin || 0;
+    for (let k = 0; k < imgs.length; k++){
+      if (onProgress) onProgress(k + 1, imgs.length);
+      const im = imgs[k];
+      const e = im.kind === 'png' ? await doc.embedPng(im.bytes) : await doc.embedJpg(im.bytes);
+      const iw = im.w * 0.75, ih = im.h * 0.75; let pw, ph;
+      if (opts.size === 'fit'){ pw = iw + 2 * m; ph = ih + 2 * m; }
+      else { const land = opts.orient === 'landscape' || (opts.orient === 'auto' && im.w > im.h); [pw, ph] = land ? [A4[1], A4[0]] : A4; }
+      const s = Math.min((pw - 2 * m) / iw, (ph - 2 * m) / ih);
+      const dw = iw * s, dh = ih * s; const page = doc.addPage([pw, ph]);
+      page.drawImage(e, { x:(pw - dw) / 2, y:(ph - dh) / 2, width:dw, height:dh });
+    }
+    return doc.save();
+  }
+  async function pagesToPdf(pages){
+    const doc = await PDFDocument.create();
+    for (const p of pages){
+      const e = await doc.embedJpg(p.bytes); const page = doc.addPage([p.wPt, p.hPt]);
+      page.drawImage(e, { x:0, y:0, width:p.wPt, height:p.hPt });
+    }
+    return doc.save();
+  }
+  return { UserError, load, merge, pick, pickMany, parseRanges, stamp, imagesToPdf, pagesToPdf, norm };
+}
+/*CORE_END*/
+
+/* --- 基礎環境與 UI 工具 --- */
+const LIBS_OK = !!(window.PDFLib && window.pdfjsLib && window.Tesseract);
+const PDFJS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + 'pdf.worker.min.js';
+const Core = window.PDFLib ? makeCore(window.PDFLib) : null;
+const UserErr = Core ? Core.UserError : Error;
+const REDUCE_MOTION = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EXTRA = {
+  xlsx:'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
+  html2canvas:'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+  docx:'https://cdn.jsdelivr.net/npm/docx-preview@0.4.1/dist/docx-preview.min.js'
+};
+const extraLoads = {};
+function loadScript(key){
+  if (!extraLoads[key]) extraLoads[key] = new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = EXTRA[key];
+    s.onload = () => res(); s.onerror = () => { delete extraLoads[key]; rej(new UserErr('所需的轉檔元件載入失敗，請確認網路連線。')); };
+    document.head.append(s);
+  });
+  return extraLoads[key];
+}
+
+const $ = (s, r = document) => r.querySelector(s);
+function el(tag, props, ...kids){
+  const n = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)){
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v; else if (k === 'style') n.style.cssText = v;
+    else if (k.startsWith('on') && typeof v === 'function') n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat(Infinity)){ if (c != null && c !== false) n.append(c instanceof Node ? c : document.createTextNode(String(c))); }
+  return n;
+}
+
+let toastTimer;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+const msgBox = () => el('div', { class:'msg', role:'status', 'aria-live':'polite' });
+function setMsg(box, text, kind){ box.className = 'msg' + (kind ? ' ' + kind : ''); box.textContent = text || ''; }
+const errText = e => (e instanceof UserErr) ? e.message : '處理時發生錯誤：' + ((e && e.message) || e);
+const baseName = n => n.replace(/\.[^.]+$/, '') || '檔案';
+const fmtSize = b => b < 1024 * 1024 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1024 / 1024).toFixed(1) + ' MB';
+const pdfBlob = bytes => new Blob([bytes], { type:'application/pdf' });
+const nextFrame = () => new Promise(r => setTimeout(r, 0));
+const toBlob = (c, type, q) => new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('圖片產生失敗')), type, q));
+
+async function saveFile(name, blob){
+  const url = URL.createObjectURL(blob);
+  const a = el('a', { href:url, download:name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+  toast('已開始下載：' + name); return true;
+}
+async function packFiles(files, zipName){
+  if (files.length === 1) return files[0];
+  if (!window.JSZip) throw new UserErr('壓縮元件沒有載入成功。');
+  const zip = new JSZip(); files.forEach(f => zip.file(f.name, f.blob));
+  return { name:zipName, blob:await zip.generateAsync({ type:'blob' }) };
+}
+
+/* --- PDF 讀取與渲染 --- */
+const PDFJS_OPTS = { isEvalSupported:false, cMapUrl:PDFJS_BASE + 'cmaps/', cMapPacked:true };
+const openBytes = bytes => pdfjsLib.getDocument({ data:bytes.slice(), ...PDFJS_OPTS }).promise;
+async function openPdf(file){
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  if (String.fromCharCode(...bytes.slice(0, 1024)).indexOf('%PDF') < 0) throw new UserErr(`「${file.name}」不是 PDF 檔。`);
+  let pdf;
+  try { pdf = await openBytes(bytes); }
+  catch(e){ throw new UserErr(`「${file.name}」無法讀取或有密碼保護。`); }
+  try { await Core.load(bytes); } catch(e){ pdf.destroy(); throw new UserErr(`「${file.name}」：${e.message}`); }
+  return { file, name:file.name, base:baseName(file.name), bytes, pdf, n:pdf.numPages };
+}
+async function renderPage(pdf, n, { maxDim, scale, longSide }){
+  const page = await pdf.getPage(n); const v1 = page.getViewport({ scale:1 });
+  const dpr = maxDim ? Math.min(2, window.devicePixelRatio || 1) + 0.5 : 1;
+  let s = scale || 1;
+  if (maxDim) s = (maxDim / Math.max(v1.width, v1.height)) * dpr;
+  if (longSide) s = longSide / Math.max(v1.width, v1.height);
+  const vp = page.getViewport({ scale:s });
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.floor(vp.width)); c.height = Math.max(1, Math.floor(vp.height));
+  const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  await page.render({ canvasContext:ctx, viewport:vp }).promise;
+  page.cleanup();
+  if (maxDim){ c.style.width = (c.width / dpr) + 'px'; c.style.height = (c.height / dpr) + 'px'; }
+  return c;
+}
+const loaders = new Set();
+function thumbLoader(pdf){
+  let chain = Promise.resolve(), alive = true;
+  const L = {
+    add(n, holder, maxDim = 112, after){
+      chain = chain.then(async () => {
+        if (!alive) return;
+        try { const c = await renderPage(pdf, n, { maxDim }); if (alive){ holder.replaceChildren(c); if (after) after(c); } }
+        catch(e){ holder.replaceChildren(el('span', { class:'ph', text:'無法預覽' })); }
+      });
+    },
+    done(){ return chain; }, alive(){ return alive; }, stop(){ alive = false; }
+  };
+  loaders.add(L); return L;
+}
+function stopLoaders(){ loaders.forEach(l => l.stop()); loaders.clear(); }
+
+/* --- 重複偵測與文字圖片工具 --- */
+function fingerprint(src){
+  const c = document.createElement('canvas'); c.width = c.height = 32; const x = c.getContext('2d', { willReadFrequently:true });
+  x.fillStyle = '#fff'; x.fillRect(0, 0, 32, 32); x.drawImage(src, 0, 0, 32, 32);
+  const d = x.getImageData(0, 0, 32, 32).data, g = new Float32Array(1024);
+  for (let i = 0; i < 1024; i++) g[i] = d[i * 4] * 0.299 + d[i * 4 + 1] * 0.587 + d[i * 4 + 2] * 0.114;
+  return g;
+}
+function fpDiff(a, b){ let s = 0; for (let i = 0; i < a.length; i++) s += Math.abs(a[i] - b[i]); return s / a.length; }
+function findDuplicates(entries){
+  const res = new Map();
+  for (let i = 0; i < entries.length; i++){
+    const a = entries[i]; if (!a || !a.fp) continue;
+    for (let j = 0; j < i; j++){
+      const b = entries[j]; if (!b || !b.fp || res.has(j)) continue;
+      if (Math.abs(a.ratio - b.ratio) > 0.02) continue;
+      if (a.text || b.text){ if (a.text && a.text === b.text && fpDiff(a.fp, b.fp) < 12){ res.set(i, j); break; } continue; }
+      if (fpDiff(a.fp, b.fp) < 3){ res.set(i, j); break; }
+    }
+  }
+  return res;
+}
+async function pageText(pdf, n){ try { const p = await pdf.getPage(n); const t = await p.getTextContent(); return t.items.map(x => x.str).join('').replace(/\s+/g, ''); } catch(e){ return ''; } }
+const FONT_STACK = '"Noto Serif TC", "Playfair Display", serif';
+const canvasPng = async c => new Uint8Array(await (await toBlob(c, 'image/png')).arrayBuffer());
+async function textStamp(text, { sizePt, color, angle, weight }){
+  try { await document.fonts.load(`${weight} ${sizePt}px ${FONT_STACK}`, text); } catch(e){}
+  const probe = document.createElement('canvas').getContext('2d');
+  probe.font = `${weight} ${sizePt}px ${FONT_STACK}`;
+  const w1 = probe.measureText(text).width + sizePt * 0.2, h1 = sizePt * 1.35;
+  const S = Math.max(1, Math.min(4, 3500 / Math.max(w1, h1)));
+  const rad = angle * Math.PI / 180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+  const tw = w1 * S, th = h1 * S;
+  const cw = Math.ceil(tw * cos + th * sin), ch = Math.ceil(tw * sin + th * cos);
+  const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+  const ctx = c.getContext('2d'); ctx.translate(cw / 2, ch / 2); ctx.rotate(-rad);
+  ctx.font = `${weight} ${sizePt * S}px ${FONT_STACK}`;
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, 0, 0);
+  return { png:await canvasPng(c), w:cw / S, h:ch / S };
+}
+function loadImage(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file); const img = new Image();
+    img.onload = () => res(img); img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('bad image')); };
+    img.src = url;
+  });
+}
+async function imageStamp(img, angle){
+  const k = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight));
+  const iw = img.naturalWidth * k, ih = img.naturalHeight * k;
+  const rad = angle * Math.PI / 180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+  const cw = Math.ceil(iw * cos + ih * sin), ch = Math.ceil(iw * sin + ih * cos);
+  const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+  const ctx = c.getContext('2d'); ctx.translate(cw / 2, ch / 2); ctx.rotate(-rad);
+  ctx.drawImage(img, -iw / 2, -ih / 2, iw, ih);
+  return { png:await canvasPng(c), w:cw, h:ch, srcW:iw };
+}
+async function imageToBytes(file){
+  const img = await loadImage(file);
+  const k = Math.min(1, 4000 / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d'); const isPng = file.type === 'image/png' || /\.png$/i.test(file.name);
+  if (!isPng){ ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+  ctx.drawImage(img, 0, 0, w, h); URL.revokeObjectURL(img.src);
+  const blob = await toBlob(c, isPng ? 'image/png' : 'image/jpeg', 0.92); c.width = c.height = 0;
+  return { bytes:new Uint8Array(await blob.arrayBuffer()), kind:isPng ? 'png' : 'jpg', w, h };
+}
+
+/* --- 版面導航系統 --- */
+function navToCat(cat) {
+  homeFilter = cat;
+  const section = $('.tools-section');
+  if (section) {
+    renderTiles();
+    section.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    go(null);
+    setTimeout(() => {
+      renderTiles();
+      const sec = $('.tools-section');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  }
+}
+
+function topNav(isToolPage = false){
+  const backBtn = isToolPage ? el('button', { class:'nav-back', type:'button', onclick:() => go(null) }, '← 返回首頁') : null;
+  
+  return el('nav', { class:'topnav' }, el('div', { class:'container' },
+    el('div', { class:'logo-group' }, 
+      el('button', { class:'logo', type:'button', onclick:() => go(null) }, 'P.'), 
+      el('span', { class:'logo-dots' }, '::'),
+      backBtn,
+      el('div', { class:'navlinks' }, 
+        el('button', { type:'button', onclick:() => navToCat('org') }, '頁面整理'),
+        el('button', { type:'button', onclick:() => navToCat('edit') }, '編輯加工'),
+        el('button', { type:'button', onclick:() => navToCat('to') }, '格式轉換')
+      )
+    ),
+    el('div', { style:'display:flex; height:100%; align-items:center;' }, el('button', { class:'nav-contact', type:'button', onclick:() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }, '探索更多') )
+  ));
+}
+
+function siteFoot(){
+  return el('footer', { class:'sitefoot' }, el('div', { class:'container' },
+    el('div', {}, el('div', { class:'logo serif', style:'font-weight:700; margin-bottom: 20px;' }, 'P. 工具箱'),
+      el('p', { text:'檔案僅在您的裝置本地處理，完全保障隱私。', style:'color:var(--muted); font-size:0.9rem; max-width: 300px; line-height: 1.8;' })
+    ), el('ul', {}, TOOLS.map(t => el('li', {}, el('button', { type:'button', onclick:() => go(t.id) }, t.name))))
+  ));
+}
+function toolShell(t, lede){
+  const steps = ['選擇檔案', '預覽設定', '下載完成'].map((s, i) => el('li', { class:'step' }, el('span', { class:'serif' }, String(i + 1) + '.'), s));
+  const stage = el('div', { class:'stage' });
+  const page = el('div', { class:'tool-page' }, topNav(true), el('section', { class:'thero' }, el('h1', { text:t.name }), el('p', { class:'lede', text:lede }), el('ol', { class:'steps' }, steps)), stage, siteFoot());
+  const setStep = n => steps.forEach((s, i) => { s.classList.toggle('done', i < n - 1); s.classList.toggle('on', i === n - 1); });
+  setStep(1); return { page, stage, setStep };
+}
+function filePicker(accept, multiple, onFiles){
+  const input = el('input', { type:'file', accept, multiple, class:'sr-only', tabindex:'-1', onchange:() => { const fs = [...input.files]; input.value = ''; if (fs.length) onFiles(fs); } });
+  return input;
+}
+function uploadCard({ accept, multiple, label, formats, onFiles }){
+  const msg = msgBox(); const input = filePicker(accept, multiple, onFiles);
+  const zone = el('div', { class:'dropzone' }, 
+    el('div', { class:'serif', style:'font-size:2rem; color:var(--line); margin-bottom: 20px; letter-spacing:0.05em;'}, 'Drop files here'),
+    el('button', { class:'btn primary big', type:'button', onclick:() => input.click() }, label),
+    formats ? el('p', { style:'margin-top:20px; font-size:0.85rem; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;'}, formats) : null, input);
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); const fs = [...(e.dataTransfer ? e.dataTransfer.files : [])]; if (fs.length) onFiles(multiple ? fs : [fs[0]]); });
+  const node = el('div', { class:'card upload' }, zone, msg); node.msg = msg; return node;
+}
+function fileHead(name, meta, onChange){
+  return el('div', { class:'filehead' }, el('div', {}, el('div', { class:'nm' }, name), meta ? el('div', { class:'mt', text:meta }) : null), onChange ? el('button', { class:'btn', type:'button', style:'padding:10px 20px;', onclick:onChange }, '更換檔案') : null);
+}
+function Workspace(layout){
+  const main = el('div', { class:'ws-main' }), side = el('div', { class:'ws-side' });
+  return { node:el('div', { class:'card ws ws-' + layout }, main, side), main, side };
+}
+function Viewer(caption){
+  const stage = el('div', { class:'vstage' }, el('p', { class:'serif', style:'color:var(--muted);', text:'預覽畫面會顯示於此。' }));
+  const label = el('span', { class:'vlabel' });
+  let prov = null, idx = 0, seq = 0, pdfDoc = null;
+  const prev = el('button', { class:'vbtn', type:'button', disabled:true, onclick:() => goTo(idx - 1) }, '‹');
+  const next = el('button', { class:'vbtn', type:'button', disabled:true, onclick:() => goTo(idx + 1) }, '›');
+  const node = el('div', { class:'viewer' }, el('div', { class:'vcap' }, el('span', { text:caption })), stage, el('div', { class:'vnav' }, prev, label, next));
+  // 放大預覽內部渲染解析度（提升至 1200）
+  const maxDim = () => Math.max(240, Math.min(1200, (stage.clientWidth || 420) - 44));
+  async function draw(){
+    const my = ++seq; if (!prov) return;
+    label.textContent = `${idx + 1} / ${prov.count}`; prev.disabled = idx <= 0; next.disabled = idx >= prov.count - 1;
+    stage.style.opacity = '0.5';
+    try { const c = await prov.render(idx, maxDim()); if (my === seq) stage.replaceChildren(c); }
+    catch(e){ if (my === seq) stage.replaceChildren(el('p', { text:'預覽失敗' })); }
+    finally { if (my === seq) stage.style.opacity = '1'; }
+  }
+  function goTo(i){ if (!prov) return; idx = Math.max(0, Math.min(prov.count - 1, i)); draw(); }
+  return {
+    node, setProvider(p, keep){ prov = p; if (!keep) idx = 0; idx = Math.max(0, Math.min(idx, p.count - 1)); draw(); },
+    async showPdf(bytes, keep){ if (pdfDoc){ try { pdfDoc.destroy(); } catch(e){} } pdfDoc = await openBytes(bytes); const d = pdfDoc; this.setProvider({ count:d.numPages, render:(i, m) => renderPage(d, i + 1, { maxDim:m }) }, keep); },
+    busy(){ seq++; stage.style.opacity = '0.5'; },
+    message(text){ seq++; prov = null; stage.style.opacity = '1'; stage.replaceChildren(el('p', { class:'serif', style:'color:var(--muted);', text })); label.textContent = ''; prev.disabled = next.disabled = true; }
+  };
+}
+function ActionBar(label, onClick, msg){
+  const btn = el('button', { class:'btn primary big block', type:'button' }, label);
+  const note = el('div', { style:'text-align:center; font-size:0.85rem; color:var(--muted); margin-top:10px; min-height:1.2em; font-family:"Noto Serif TC", serif;' });
+  btn.onclick = async () => {
+    if (btn.disabled) return;
+    btn.disabled = true; btn.textContent = '處理中...';
+    if (msg) setMsg(msg, '');
+    try { await onClick(t => { note.textContent = t; }); }
+    catch(e){ if (msg) setMsg(msg, errText(e), 'err'); toast(errText(e)); note.textContent = '';}
+    finally { btn.disabled = false; btn.textContent = label; }
+  };
+  return { node:el('div', { class:'actionbar' }, btn, note), btn, note, enable(on, text){ btn.disabled = !on; if (text!=null) note.textContent = text; } };
+}
+function AutoResult(viewer, build, ab){
+  let seq = 0, timer, latest = null;
+  function run(){
+    clearTimeout(timer); latest = null; viewer.busy(); if (ab) ab.enable(false, '產生預覽中...');
+    timer = setTimeout(async () => {
+      const my = ++seq;
+      try {
+        const bytes = await build(); if (my !== seq) return;
+        if (!bytes){ if (ab) ab.enable(false, ''); return; }
+        latest = bytes; await viewer.showPdf(bytes, true); if (ab) ab.enable(true, `已就緒 (${fmtSize(bytes.length)})`);
+      } catch(e){ if (my !== seq) return; viewer.message(errText(e)); if (ab) ab.enable(false, ''); }
+    }, 350);
+  }
+  return { run, get:() => latest };
+}
+function select(options, value){ const s = el('select'); options.forEach(([v, text]) => s.append(el('option', { value:v, text }))); s.value = value; return s; }
+function field(label, control, hint){ const id = 'f' + Math.random().toString(36).slice(2, 8); control.id = id; return el('div', { class:'field' }, el('label', { for:id, text:label }), control, hint ? el('p', { class:'hint', style:'font-size:0.85rem; margin-top:8px; color:var(--muted);', text:hint }) : null); }
+function segmented(opts, value, onchange){ const wrap = el('div', { class:'seg', role:'group' }); const btns = opts.map(([v, t]) => el('button', { type:'button', 'aria-pressed':String(v === value), onclick:() => { btns.forEach(b => b.setAttribute('aria-pressed', String(b === btns[opts.findIndex(o => o[0] === v)]))); onchange(v); } }, t)); wrap.append(...btns); return wrap; }
+function radioGroup(name, opts, value, onchange){ const wrap = el('div', { role:'radiogroup' }); opts.forEach(([v, title, desc, extra]) => { const input = el('input', { type:'radio', name, value:v, checked:v === value, onchange:() => onchange(v) }); wrap.append(el('label', { class:'choice' }, input, el('span', { style:'flex:1;min-width:0' }, el('b', { text:title }), desc ? el('span', { class:'hint', style:'display:block; margin-top:5px; font-size:0.85rem; color:var(--muted);', text:desc }) : null, extra || null))); }); return wrap; }
+
+function mkLabel(text, rightEl) {
+  return el('div', { style:'display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;' },
+    el('label', { class:'flabel', style:'margin-bottom:0;', text:text }),
+    rightEl
+  );
+}
+
+function singlePdfTool(t, lede, layout, build){
+  const { page, stage, setStep } = toolShell(t, lede); let current = null;
+  const up = uploadCard({ accept:'application/pdf,.pdf', multiple:false, label:'選擇 PDF', formats:'支援 .pdf', onFiles:async ([f]) => {
+    setMsg(up.msg, '讀取中...', 'info');
+    try {
+      const doc = await openPdf(f); stopLoaders();
+      if (current){ try { current.pdf.destroy(); } catch(e){} }
+      current = doc; setMsg(up.msg, '');
+      const ws = Workspace(layout); const msg = msgBox();
+      ws.main.append(fileHead(doc.name, `共 ${doc.n} 頁 · ${fmtSize(doc.bytes.length)}`, () => { stopLoaders(); stage.replaceChildren(up); setStep(1); }));
+      build(doc, { ws, msg, setStep });
+      stage.replaceChildren(ws.node); setStep(2);
+    } catch(e){ setMsg(up.msg, errText(e), 'err'); }
+  } });
+  stage.append(up); return page;
+}
+
+function selectableGrid(doc, mode, onChange){
+  const sel = new Set(); const loader = thumbLoader(doc.pdf); const cards = [], canvases = []; const count = el('span', { class:'hint', style:'font-family:"Noto Serif TC", serif;' }); const grid = el('div', { class:'thumbs' });
+  const toggle = i => { sel.has(i) ? sel.delete(i) : sel.add(i); refresh(); };
+  for (let i = 0; i < doc.n; i++){
+    const holder = el('div', { class:'img' });
+    const card = el('button', { type:'button', class:'thumb', onclick:() => toggle(i) }, holder, el('span', { class:'label', text:`第 ${i + 1} 頁` }));
+    cards.push(card); grid.append(card); loader.add(i + 1, holder, 112, c => { canvases[i] = c; });
+  }
+  function refresh(silent){
+    cards.forEach((c, i) => { const on = sel.has(i); c.classList.toggle(mode === 'keep' ? 'sel' : 'del', on); });
+    count.textContent = mode === 'keep' ? `已選取 ${sel.size} 頁` : `將刪除 ${sel.size} 頁，剩餘 ${doc.n - sel.size} 頁`;
+    if (!silent && onChange) onChange();
+  }
+  const rangeIn = el('input', { type:'text', class:'input', placeholder:'例如：1-3, 5' });
+  const bar = el('div', { style:'margin-bottom:20px;' }, el('div', { class:'row' }, rangeIn, el('button', { class:'btn', type:'button', onclick:() => { try { Core.parseRanges(rangeIn.value, doc.n).flat().forEach(i => sel.add(i)); refresh(); } catch(e){ toast(errText(e)); } } }, '依頁碼選取')), el('div', { class:'row', style:'margin-top:10px;' }, el('button', { class:'btn', style:'padding:10px 15px;', type:'button', onclick:() => { for (let i = 0; i < doc.n; i++) sel.add(i); refresh(); } }, '全選'), el('button', { class:'btn', style:'padding:10px 15px;', type:'button', onclick:() => { sel.clear(); refresh(); } }, '全部清除'), count));
+  refresh(true); return { node:el('div', {}, bar, grid), sel, cards, canvases, loader, refresh };
+}
+
+function arrangeGrid(doc, { allowMove, allowDelete, clickRotates, onChange }){
+  let order = [], uid = 0; const canvases = new Map(); const grid = el('div', { class:'thumbs' }); const changed = () => { if (onChange) onChange(); };
+  function reset(){ order = Array.from({ length:doc.n }, (_, i) => ({ id:uid++, i, rot:0 })); draw(); changed(); }
+  function applyRot(o){ const c = canvases.get(o.id); if (c) c.style.transform = `rotate(${o.rot}deg)`; }
+  function draw(){
+    stopLoaders(); const L = thumbLoader(doc.pdf); grid.replaceChildren();
+    order.forEach((o, pos) => {
+      const holder = el('div', { class:'img' });
+      const label = el('span', { class:'label', text:`第 ${o.i + 1} 頁${Core.norm(o.rot) ? ` (+${Core.norm(o.rot)}°)` : ''}` });
+      const rotate = d => { o.rot += d; applyRot(o); label.textContent = `第 ${o.i + 1} 頁${Core.norm(o.rot) ? ` (+${Core.norm(o.rot)}°)` : ''}`; changed(); };
+      const ctls = el('div', { class:'ctls' },
+        allowMove ? el('button', { class:'ctl', type:'button', disabled:pos === 0, onclick:e => { e.stopPropagation(); move(pos, -1); } }, '‹') : null,
+        el('button', { class:'ctl', type:'button', onclick:e => { e.stopPropagation(); rotate(90); } }, '↻'),
+        allowDelete ? el('button', { class:'ctl', type:'button', onclick:e => { e.stopPropagation(); if (order.length === 1){ toast('至少保留一頁'); return; } order.splice(pos, 1); draw(); changed(); } }, '✕') : null,
+        allowMove ? el('button', { class:'ctl', type:'button', disabled:pos === order.length - 1, onclick:e => { e.stopPropagation(); move(pos, 1); } }, '›') : null);
+      const card = el(clickRotates ? 'button' : 'div', { class:'thumb', 'data-id':o.id, type: clickRotates ? 'button' : null, onclick: clickRotates ? () => rotate(90) : null }, holder, label, clickRotates ? null : ctls);
+      grid.append(card); L.add(o.i + 1, holder, 112, c => { canvases.set(o.id, c); applyRot(o); });
+    });
+  }
+  function move(pos, d){ const t = pos + d; if (t < 0 || t >= order.length) return; [order[pos], order[t]] = [order[t], order[pos]]; draw(); changed(); }
+  if (allowMove && window.Sortable){ Sortable.create(grid, { animation: REDUCE_MOTION ? 0 : 150, delay:180, delayOnTouchOnly:true, filter:'.ctl', preventOnFilter:false, onEnd(){ const ids = [...grid.children].map(c => +c.dataset.id); order = ids.map(id => order.find(o => o.id === id)); draw(); changed(); } }); }
+  reset(); return { grid, getOrder:() => order, rotateAll:d => { order.forEach(o => { o.rot += d; }); draw(); changed(); }, reset };
+}
+
+/* --- 進階 Office 解析器 --- */
+function toPages(canvas, pageW, pageH, padTop, padBottom, padFirst){
+  const ctx = canvas.getContext('2d', { willReadFrequently:true }); const pages = []; let y = 0, first = true;
+  while (y < canvas.height - 2){
+    const room = first && !padFirst ? pageH - padBottom : pageH - padTop - padBottom;
+    let end = Math.min(y + room, canvas.height);
+    if (end < canvas.height) { 
+      const data = ctx.getImageData(0, y + room*0.7, canvas.width, end - (y + room*0.7)).data;
+      let cutFound = end;
+      for(let r = end - (y + room*0.7) - 1; r>=0; r--){ let blank=true; for(let x=0; x<canvas.width; x+=4){ const i = (r*canvas.width+x)*4; if(data[i]<238 || data[i+1]<238){ blank=false; break; } } if(blank){ cutFound = y + room*0.7 + r + 1; break; } }
+      end = cutFound;
+    }
+    const p = document.createElement('canvas'); p.width = Math.round(pageW); p.height = Math.round(pageH);
+    const px = p.getContext('2d'); px.fillStyle = '#fff'; px.fillRect(0, 0, p.width, p.height);
+    const dy = first && !padFirst ? 0 : padTop;
+    px.drawImage(canvas, 0, y, canvas.width, end - y, 0, dy, canvas.width, end - y);
+    pages.push(p); y = end; first = false;
+  }
+  if (!pages.length){ const p = document.createElement('canvas'); p.width = Math.round(pageW); p.height = Math.round(pageH); p.getContext('2d').fillStyle='#fff'; p.getContext('2d').fillRect(0,0,p.width,p.height); p.getContext('2d').drawImage(canvas, 0, 0); pages.push(p); }
+  return pages;
+}
+async function canvasesToPdf(list){
+  const pages = [];
+  for (const it of list){ const b = await toBlob(it.canvas, 'image/jpeg', 0.9); pages.push({ bytes:new Uint8Array(await b.arrayBuffer()), wPt:it.wPt, hPt:it.hPt }); it.canvas.width = it.canvas.height = 0; }
+  return Core.pagesToPdf(pages);
+}
+async function wordToPdf(buf, prog){
+  await Promise.all([loadScript('html2canvas'), loadScript('docx')]);
+  const host = el('div', { class:'render-host' }); document.body.append(host);
+  try {
+    try { await docx.renderAsync(buf, host, null, { inWrapper:false, breakPages:true, renderHeaders:true, renderFooters:true }); } catch(e){ throw new UserErr('Word 讀取失敗。請確認是 .docx 格式。'); }
+    await Promise.all([...host.querySelectorAll('img')].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+    const sections = [...host.querySelectorAll('section')].filter(s => s.offsetHeight > 0);
+    if (!sections.length) throw new UserErr('這份文件沒有內容。');
+    const out = [];
+    for (let k = 0; k < sections.length; k++){
+      if (prog) prog(`處理中：第 ${k + 1} / ${sections.length} 段落`);
+      const sec = sections[k], cs = getComputedStyle(sec);
+      const W = sec.offsetWidth, H = parseFloat(sec.style.minHeight) || parseFloat(cs.minHeight) || W * 1.4142;
+      const pt = parseFloat(cs.paddingTop) || 0, pb = parseFloat(cs.paddingBottom) || 0, rs = Math.min(2, 1700 / W);
+      await nextFrame();
+      const canvas = await html2canvas(sec, { scale:rs, backgroundColor:'#ffffff', logging:false, windowWidth:W + 200, height:Math.max(sec.scrollHeight, sec.offsetHeight) });
+      for (const p of toPages(canvas, W * rs, H * rs, pt * rs, pb * rs)) out.push({ canvas:p, wPt:W * 0.75, hPt:H * 0.75 });
+      canvas.width = canvas.height = 0;
+    }
+    return canvasesToPdf(out);
+  } finally { host.remove(); }
+}
+async function excelToPdf(buf, { landscape, scaleMode }, prog){
+  await loadScript('xlsx'); await loadScript('html2canvas');
+  let wb; try { wb = XLSX.read(buf, { type:'array', cellNF:true, cellDates:false }); } catch(e){ throw new UserErr('Excel 讀取失敗。'); }
+  const sections = wb.SheetNames.map(name => {
+    const ws = wb.Sheets[name]; if(!ws || !ws['!ref']) return null;
+    const table = document.createElement('table'); const html = XLSX.utils.sheet_to_html(ws); table.innerHTML = html.replace(/<table[^>]*>|<\/table>/gi, '');
+    table.style.borderCollapse = 'collapse'; table.querySelectorAll('td').forEach(td => { td.style.border = '1px solid #d9d9d9'; td.style.padding = '4px 8px'; });
+    return { name, table };
+  }).filter(Boolean);
+  if (!sections.length) throw new UserErr('這份試算表沒有內容。');
+  const A4 = [595.28, 841.89]; const [pw, ph] = landscape ? [A4[1], A4[0]] : A4; const margin = 36, PX = 96 / 72;
+  const host = el('div', { class:'render-host' }); document.body.append(host);
+  const out = [];
+  try {
+    for (let k = 0; k < sections.length; k++){
+      if (prog) prog(`處理中：工作表 ${k + 1} / ${sections.length}`);
+      const s = sections[k]; const div = el('div', { class:'sheet' }, sections.length > 1 ? el('h2', { text:s.name }) : null, s.table);
+      host.replaceChildren(div);
+      
+      const contentW = (pw - 2 * margin) * PX;
+      const contentH = (ph - 2 * margin) * PX;
+      const natW = Math.max(div.scrollWidth, s.table.offsetWidth, 10); 
+      host.style.width = natW + 'px';
+      const rs = Math.min(2.2, 2400 / natW);
+      await nextFrame();
+      const canvas = await html2canvas(div, { scale:rs, backgroundColor:'#ffffff', logging:false, windowWidth:natW + 200 });
+      const S = 2, pageWpx = pw * PX, pageHpx = ph * PX;
+      
+      if (scaleMode === 'fitPage') {
+        const sc = document.createElement('canvas'); 
+        sc.width = Math.round(pageWpx * S);
+        sc.height = Math.round(pageHpx * S);
+        const sx = sc.getContext('2d'); sx.fillStyle = '#fff'; sx.fillRect(0, 0, sc.width, sc.height);
+        
+        const scale = Math.min(contentW / natW, contentH / (canvas.height/rs), 1);
+        const dw = natW * scale * S;
+        const dh = (canvas.height/rs) * scale * S;
+        
+        sx.drawImage(canvas, margin * PX * S, margin * PX * S, dw, dh);
+        out.push({ canvas:sc, wPt:pw, hPt:ph });
+      } else {
+        const fitW = scaleMode === 'fitWidth' ? Math.min(contentW, natW * 1.6) : natW;
+        const sc = document.createElement('canvas'); 
+        sc.width = Math.round(pageWpx * S); 
+        sc.height = Math.max(1, Math.round(canvas.height * (fitW * S / canvas.width)));
+        const sx = sc.getContext('2d'); sx.fillStyle = '#fff'; sx.fillRect(0, 0, sc.width, sc.height); 
+        sx.drawImage(canvas, margin * PX * S, 0, fitW * S, sc.height); 
+        for (const p of toPages(sc, sc.width, pageHpx * S, margin * PX * S, margin * PX * S, true)) out.push({ canvas:p, wPt:pw, hPt:ph });
+      }
+      canvas.width = canvas.height = 0;
+    }
+  } finally { host.remove(); }
+  return canvasesToPdf(out);
+}
+function officeTool(t, kind){
+  const isWord = kind === 'word';
+  const { page, stage, setStep } = toolShell(t, isWord ? '將 Word 轉換為高質量的 PDF，保留文字版面。' : '將 Excel 轉換為乾淨的 PDF，自動適應頁寬。');
+  const up = uploadCard({ accept: isWord ? '.docx' : '.xlsx,.xls,.csv', multiple:false, label: isWord ? '選擇 Word 檔' : '選擇 Excel 檔', formats: isWord ? '支援 .docx' : '支援 .xlsx, .csv', onFiles:([f]) => {
+      const ok = isWord ? /\.docx$/i.test(f.name) : /\.(xlsx|xls|csv)$/i.test(f.name);
+      if (!ok){ setMsg(up.msg, isWord ? '請選擇 .docx 格式檔案。' : '請選擇試算表檔案。', 'err'); return; }
+      setMsg(up.msg, ''); open(f);
+    } });
+  function open(file){
+    const ws = Workspace('preview'), msg = msgBox(), viewer = Viewer('轉換結果');
+    let landscape = !isWord, scaleMode = 'fitWidth', bufP = file.arrayBuffer();
+    const ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile(`${baseName(file.name)}.pdf`, pdfBlob(b))) setStep(3); }, msg);
+    const auto = AutoResult(viewer, async () => { ab.enable(false, '處理轉換中...'); const buf = (await bufP).slice(0); return isWord ? wordToPdf(buf, t => ab.enable(false, t)) : excelToPdf(buf, { landscape, scaleMode }, t => ab.enable(false, t)); }, ab);
+    ws.main.append(fileHead(file.name, fmtSize(file.size), () => { stage.replaceChildren(up); setStep(1); }), el('h2', { class:'sec-title', text:'轉換設定' }),
+      isWord ? el('p', { class:'note', text:'頁面大小、方向和邊界將自動採用原始 Word 的設定。' }) : el('div', {}, 
+        el('div', { class:'field' }, el('span', { class:'flabel', text:'頁面方向' }), segmented([['portrait', '直式'], ['landscape', '橫式']], 'landscape', v => { landscape = v === 'landscape'; auto.run(); })), 
+        el('div', { class:'field' }, el('span', { class:'flabel', text:'縮放選項' }), segmented([['none', '原尺寸'], ['fitWidth', '適應頁寬'], ['fitPage', '硬縮成一頁']], 'fitWidth', v => { scaleMode = v; auto.run(); }))
+      ),
+      msg, ab.node);
+    ws.side.append(viewer.node); stage.replaceChildren(ws.node); setStep(2); auto.run();
+  }
+  stage.append(up); return page;
+}
+
+/* --- 工具註冊與視圖 --- */
+const CATS = {
+  org:  { name:'頁面整理' }, edit: { name:'編輯加工' }, to: { name:'格式轉換' }, ocr:  { name:'文字識別' }
+};
+const TOOLS = [
+  { id:'merge',     cat:'org',  name:'合併 PDF',    desc:'將多份文件流暢地組合成一份。自動偵測重複。' },
+  { id:'split',     cat:'org',  name:'拆分 PDF',    desc:'依據指定頁碼將檔案分割成多個文件。' },
+  { id:'extract',   cat:'org',  name:'提取頁面',    desc:'挑選出需要的頁面，建立全新的檔案。' },
+  { id:'remove',    cat:'org',  name:'移除頁面',    desc:'精準剔除不需要的頁面，支援重複頁偵測。' },
+  { id:'organize',  cat:'org',  name:'整理頁面',    desc:'透過拖曳，自由調整所有頁面的順序與方向。' },
+  { id:'rotate',    cat:'org',  name:'旋轉 PDF',    desc:'輕鬆將倒置或傾斜的頁面轉正。' },
+  { id:'pagenum',   cat:'edit', name:'添加頁碼',    desc:'以優雅的字體，為每一頁印上頁碼。' },
+  { id:'watermark', cat:'edit', name:'浮水印',      desc:'疊加專屬文字或圖片印記。可自由調整大小角度。' },
+  { id:'img2pdf',   cat:'to',   name:'圖片轉 PDF',  desc:'將您的相片與圖檔集結成 PDF 畫冊。自動偵測重複。' },
+  { id:'word2pdf',  cat:'to',   name:'Word 轉 PDF', desc:'保留原始版面的文字文件轉換。' },
+  { id:'excel2pdf', cat:'to',   name:'Excel 轉 PDF',desc:'可靈活縮放至單一頁面的報表轉換。' },
+  { id:'pdf2img',   cat:'to',   name:'PDF 轉圖片',  desc:'將文件中的每一頁匯出為高品質圖像。' },
+  { id:'ocr',       cat:'ocr',  name:'文字擷取',    desc:'利用本地端 AI 技術，精準識別掃描檔文字。', isNew:true }
+];
+
+const VIEWS = {
+  merge(t){
+    const { page, stage, setStep } = toolShell(t, '將多份 PDF 無縫接合，您可以自由拖曳調整順序。');
+    const items = []; let uid = 0, ws = null, list, viewer, ab, auto, msg, banner;
+    const up = uploadCard({ accept:'application/pdf,.pdf', multiple:true, label:'選擇檔案', formats:'支援同時選取多份', onFiles:add });
+    async function add(files){
+      const loads = [];
+      for (const f of files){ 
+        try { 
+          const d = await openPdf(f); d.id = uid++; d.fp = null; d.ratio = 1; items.push(d);
+          loads.push(renderPage(d.pdf, 1, { maxDim: 112 }).then(c => { d.fp = fingerprint(c); d.ratio = c.width / c.height; }).catch(() => {}));
+        } catch(e){} 
+      }
+      if (items.length && !ws) buildWs(); 
+      if (ws){ draw(); await Promise.all(loads); draw(); auto.run(); }
+    }
+    function buildWs(){
+      ws = Workspace('pages'); msg = msgBox(); list = el('div', { class:'list' }); viewer = Viewer('合併預覽'); banner = el('div', { class:'banner' });
+      ab = ActionBar('下載合併檔案', async () => { const b = auto.get(); if (b && await saveFile('合併結果.pdf', pdfBlob(b))) setStep(3); }, msg);
+      auto = AutoResult(viewer, async () => items.length < 2 ? (viewer.message('請加入至少兩份檔案。'), null) : Core.merge(items.map(d => d.bytes)), ab);
+      const more = filePicker('application/pdf,.pdf', true, add);
+      ws.main.append(el('h2', { class:'sec-title', text:'檔案順序' }), banner, list, el('button', { class:'btn block', style:'margin-top:20px; border-style:dashed;', type:'button', onclick:() => more.click() }, '+ 加入更多'), more, msg);
+      ws.side.append(viewer.node, ab.node);
+      if (window.Sortable) Sortable.create(list, { onEnd(){ const ids = [...list.children].map(c => +c.dataset.id); const copy = items.slice(); items.length = 0; ids.forEach(id => items.push(copy.find(d => d.id === id))); draw(); auto.run(); } });
+      stage.replaceChildren(ws.node); setStep(2);
+    }
+    function draw(){
+      list.replaceChildren();
+      items.forEach((d, k) => { list.append(el('div', { class:'item', 'data-id':d.id }, el('span', { class:'pos', text:String(k+1) }), el('div', { class:'info', style:'flex:1' }, el('b', { text:d.name, style:'font-family:"Noto Serif TC", serif;' }), el('div', { style:'font-size:0.85rem; color:var(--muted)' }, `${d.n} 頁`)), el('button', { class:'btn', style:'padding:8px 15px;', type:'button', onclick:() => { items.splice(k, 1); draw(); auto.run(); } }, '移除'))); });
+      
+      const dups = findDuplicates(items.map(it => it.fp ? { fp:it.fp, ratio:it.ratio } : null));
+      if (dups.size) {
+        banner.className = 'banner warn show';
+        banner.replaceChildren(el('span', {}, '偵測到 ', el('b', { text:`${dups.size} 份` }), ' 重複文件 (依據首頁特徵)。'),
+         el('button', { class:'btn warn', style:'padding:6px 12px;', type:'button', onclick:() => { 
+            const drop = new Set(dups.keys());
+            for (let k = items.length - 1; k >= 0; k--) if (drop.has(k)) items.splice(k, 1);
+            draw(); auto.run();
+         } }, '移除重複'));
+      } else {
+        banner.className = 'banner'; banner.replaceChildren();
+      }
+    }
+    stage.append(up); return page;
+  },
+  split(t){
+    return singlePdfTool(t, '指定頁碼範圍，將一份文件切分成多個獨立的檔案。', 'preview', (doc, { ws, msg, setStep }) => {
+      let groups = []; const rangeIn = el('input', { type:'text', class:'input', placeholder:'例如：1-3, 4-6, 7' }); const viewer = Viewer('分割預覽');
+      const ab = ActionBar('下載 ZIP 壓縮檔', async () => { if (!groups.length) throw new UserErr('範圍設定無效。'); const outs = await Core.pickMany(doc.bytes, groups); const files = outs.map((b, g) => ({ name:`段落_${g+1}.pdf`, blob:pdfBlob(b) })); const f = await packFiles(files, `${doc.base}_已分割.zip`); if (await saveFile(f.name, f.blob)) setStep(3); }, msg);
+      function recompute(){ try { groups = rangeIn.value.trim() ? Core.parseRanges(rangeIn.value, doc.n) : []; } catch(e){ groups = []; viewer.message('範圍錯誤。'); ab.enable(false); return; } if (!groups.length){ viewer.message('請輸入上方範圍。'); ab.enable(false); return; } viewer.setProvider({ count:groups[0].length, render:(i, m) => renderPage(doc.pdf, groups[0][i] + 1, { maxDim:m }) }); ab.enable(true); }
+      rangeIn.oninput = recompute; ws.main.append(el('h2', { class:'sec-title', text:'分割設定' }), field('輸入切割頁碼 (以逗號分隔)', rangeIn, '範例: 1-5, 6-10'), msg, ab.node); ws.side.append(viewer.node); recompute();
+    });
+  },
+  extract(t){
+    return singlePdfTool(t, '點擊並選取您想保留的頁面。', 'pages', (doc, { ws, msg, setStep }) => {
+      const viewer = Viewer('新檔案預覽');
+      const ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile(`${doc.base}_已提取.pdf`, pdfBlob(b))) setStep(3); }, msg);
+      const auto = AutoResult(viewer, async () => { if (!g.sel.size){ viewer.message('請點選左側頁面。'); return null; } return Core.pick(doc.bytes, [...g.sel].sort((a, b) => a - b).map(i => ({ i }))); }, ab);
+      const g = selectableGrid(doc, 'keep', auto.run);
+      ws.main.append(el('h2', { class:'sec-title', text:'挑選保留頁面' }), g.node, msg); ws.side.append(viewer.node, ab.node); auto.run();
+    });
+  },
+  remove(t){
+    return singlePdfTool(t, '點擊不要的頁面即可刪除。系統會自動標示出重複的頁面。', 'pages', (doc, { ws, msg, setStep }) => {
+      const viewer = Viewer('結果預覽'); const banner = el('div', { class:'banner info show', text:'檢查重複頁面中...' });
+      const ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile(`${doc.base}_已清理.pdf`, pdfBlob(b))) setStep(3); }, msg);
+      const auto = AutoResult(viewer, async () => { if (!g.sel.size){ viewer.message('請點選要刪除的頁面。'); return null; } if (g.sel.size >= doc.n) throw new UserErr('至少保留一頁。'); const keep = []; for (let i = 0; i < doc.n; i++) if (!g.sel.has(i)) keep.push({ i }); return Core.pick(doc.bytes, keep); }, ab);
+      const g = selectableGrid(doc, 'drop', auto.run);
+      (async () => { await g.loader.done(); if (!g.loader.alive()) return; const entries = []; for (let i = 0; i < doc.n; i++){ const c = g.canvases[i]; entries.push(c ? { fp:fingerprint(c), ratio:c.width / c.height, text:await pageText(doc.pdf, i + 1) } : null); } const dups = findDuplicates(entries); if (!dups.size){ banner.className = 'banner ok show'; banner.textContent = '未發現重複頁面。'; return; } dups.forEach((j, i) => { g.cards[i].classList.add('isdup'); g.cards[i].append(el('span', { class:'dup', text:`同第 ${j + 1} 頁` })); }); banner.className = 'banner warn show'; banner.replaceChildren(el('span', {}, '偵測到 ', el('b', { text:`${dups.size} 頁` }), ' 重複內容。'), el('button', { class:'btn warn', style:'padding:6px 12px;', type:'button', onclick:() => { dups.forEach((_, i) => g.sel.add(i)); g.refresh(); } }, '全選重複項')); })();
+      ws.main.append(el('h2', { class:'sec-title', text:'剔除不需要的頁面' }), banner, g.node, msg); ws.side.append(viewer.node, ab.node); auto.run();
+    });
+  },
+  organize(t){
+    return singlePdfTool(t, '自由拖曳調整順序，或單獨翻轉、刪除特定頁面。', 'pages', (doc, { ws, msg, setStep }) => {
+      const viewer = Viewer('整理預覽');
+      const ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile(`${doc.base}_已整理.pdf`, pdfBlob(b))) setStep(3); }, msg);
+      const auto = AutoResult(viewer, () => Core.pick(doc.bytes, a.getOrder().map(o => ({ i:o.i, rot:o.rot }))), ab);
+      const a = arrangeGrid(doc, { allowMove:true, allowDelete:true, onChange:auto.run });
+      ws.main.append(el('h2', { class:'sec-title', text:'排列與控制' }), el('div', { class:'row', style:'margin-bottom:20px;' }, el('button', { class:'btn', type:'button', onclick:a.reset }, '重置還原')), a.grid, msg); ws.side.append(viewer.node, ab.node); auto.run();
+    });
+  },
+  rotate(t){
+    return singlePdfTool(t, '點選任何頁面即可將其向右旋轉 90 度。', 'pages', (doc, { ws, msg, setStep }) => {
+      const viewer = Viewer('旋轉預覽');
+      const ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile(`${doc.base}_已旋轉.pdf`, pdfBlob(b))) setStep(3); }, msg);
+      const auto = AutoResult(viewer, () => Core.pick(doc.bytes, a.getOrder().map(o => ({ i:o.i, rot:o.rot }))), ab);
+      const a = arrangeGrid(doc, { allowMove:false, allowDelete:false, clickRotates:true, onChange:auto.run });
+      ws.main.append(el('h2', { class:'sec-title', text:'點擊頁面進行旋轉' }), el('div', { class:'row', style:'margin-bottom:20px;' }, el('button', { class:'btn', type:'button', onclick:() => a.rotateAll(90) }, '全部右轉'), el('button', { class:'btn', type:'button', onclick:() => a.rotateAll(-90) }, '全部左轉'), el('button', { class:'btn', type:'button', onclick:a.reset }, '重置')), a.grid, msg); ws.side.append(viewer.node, ab.node); auto.run();
+    });
+  },
+  pagenum(t){
+    return singlePdfTool(t, '選擇優雅的明體頁碼，裝飾於您的文件頁腳。', 'preview', (doc, { ws, msg, setStep }) => {
+      const pos = select([['bc', '下方置中'], ['br', '下方靠右']], 'bc'); const fmt = select([['n', '1'], ['zh', '- 1 -']], 'n'); const size = select([['12', '標準'], ['16', '大型']], '12'); const startIn = el('input', { type:'number', class:'input', value:'1' }); const skipFirst = el('input', { type:'checkbox' }); const viewer = Viewer('頁碼預覽');
+      function makeFn(){ const start = parseInt(startIn.value, 10); const skip = skipFirst.checked; const pt = +size.value, p = pos.value, f = fmt.value; return async (i, _n, vw, vh) => { if (skip && i === 0) return []; const num = start + i - (skip ? 1 : 0); const text = f === 'n' ? `${num}` : `- ${num} -`; const s = await textStamp(text, { sizePt:pt, color:'#1a1a1a', angle:0, weight:500 }); const margin = 30; const x = p[1] === 'r' ? vw - margin - s.w : (vw - s.w) / 2, y = margin; return [{ key:text, png:s.png, x, y, w:s.w, h:s.h }]; }; }
+      const singles = {}; function refresh(){ try { const fn = makeFn(); viewer.setProvider({ count:doc.n, render: async (i, m) => { if (!singles[i]) singles[i] = await Core.pick(doc.bytes, [{ i }]); const out = await Core.stamp(singles[i], (_i, n, vw, vh) => fn(i, doc.n, vw, vh)); const pdf = await openBytes(out); const c = await renderPage(pdf, 1, { maxDim:m }); pdf.destroy(); return c; } }, true); } catch(e){ viewer.message(errText(e)); } }
+      [pos, fmt, size, skipFirst].forEach(c => c.addEventListener('change', refresh)); startIn.addEventListener('input', refresh);
+      const ab = ActionBar('套用並下載', async () => { const bytes = await Core.stamp(doc.bytes, makeFn()); if (await saveFile(`${doc.base}_加頁碼.pdf`, pdfBlob(bytes))) setStep(3); }, msg);
+      ws.main.append(el('h2', { class:'sec-title', text:'排版設定' }), field('位置', pos), field('樣式', fmt), field('字級', size), field('起始頁碼', startIn), el('label', { class:'check' }, skipFirst, el('span', { text:'首頁不加頁碼 (適用於封面)' })), msg, ab.node); ws.side.append(viewer.node); refresh();
+    });
+  },
+  watermark(t){
+    return singlePdfTool(t, '疊加專屬文字或圖片印記。使用滑桿自由調整大小與角度。', 'preview', (doc, { ws, msg, setStep }) => {
+      let kind = 'text', wmImage = null; 
+      const textIn = el('input', { type:'text', class:'input', value:'CONFIDENTIAL' }); 
+      
+      const sizeOut = el('span', { style:'font-weight:normal; color:var(--muted);' }, '100%');
+      const sizeScale = el('input', { type:'range', min:'10', max:'400', step:'5', value:'100' });
+      
+      const angleOut = el('span', { style:'font-weight:normal; color:var(--muted);' }, '45°');
+      const angleScale = el('input', { type:'range', min:'-180', max:'180', step:'5', value:'45' });
+      
+      const opacityOut = el('span', { style:'font-weight:normal; color:var(--muted);' }, '20%');
+      const opacityScale = el('input', { type:'range', min:'5', max:'100', step:'5', value:'20' }); 
+      
+      const imgInput = filePicker('image/*', false, async ([f]) => { try { wmImage = await loadImage(f); refresh(); } catch(e){} }); 
+      const viewer = Viewer('浮水印預覽');
+      
+      function makeFn(){ 
+        const op = +opacityScale.value / 100; 
+        const ang = +angleScale.value;
+        const scale = +sizeScale.value / 100;
+        const text = textIn.value.trim(); 
+        return async (i, _n, vw, vh) => { 
+          if (kind === 'text' && !text) return []; 
+          let base; 
+          if(kind === 'text'){ 
+            base = await textStamp(text, { sizePt:72 * scale, color:'#000', angle:ang, weight:700 }); 
+            return [{ key:`wm_${op}_${ang}_${scale}_${text}`, png:base.png, x:(vw - base.w)/2, y:(vh - base.h)/2, w:base.w, h:base.h, opacity:op }];
+          } else { 
+            if(!wmImage) return []; 
+            base = await imageStamp(wmImage, ang); 
+            const fw = base.w * scale, fh = base.h * scale;
+            return [{ key:`wm_${op}_${ang}_${scale}`, png:base.png, x:(vw - fw)/2, y:(vh - fh)/2, w:fw, h:fh, opacity:op }]; 
+          } 
+        }; 
+      }
+      
+      let timer; 
+      function refresh(){ 
+        sizeOut.textContent = sizeScale.value + '%';
+        angleOut.textContent = angleScale.value + '°';
+        opacityOut.textContent = opacityScale.value + '%';
+        clearTimeout(timer); 
+        timer = setTimeout(() => { 
+          const fn = makeFn(); 
+          viewer.setProvider({ count:doc.n, render: async (i, m) => { 
+            const out = await Core.stamp(await Core.pick(doc.bytes, [{ i }]), (_i, n, vw, vh) => fn(i, doc.n, vw, vh)); 
+            const pdf = await openBytes(out); const c = await renderPage(pdf, 1, { maxDim:m }); pdf.destroy(); return c; 
+          } }, true); 
+        }, 200); 
+      }
+      [textIn, opacityScale, angleScale, sizeScale].forEach(c => c.addEventListener('input', refresh));
+      
+      const ab = ActionBar('套用並下載', async () => { const bytes = await Core.stamp(doc.bytes, makeFn()); if (await saveFile(`${doc.base}_浮水印.pdf`, pdfBlob(bytes))) setStep(3); }, msg);
+      ws.main.append(el('h2', { class:'sec-title', text:'印記設定' }), 
+        el('div', { class:'field' }, segmented([['text', '文字'], ['image', '圖片']], 'text', v => { kind = v; refresh(); })), 
+        el('div', { class:'field' }, el('span', { class:'flabel' }, '文字內容'), textIn), 
+        el('div', { class:'field' }, el('button', { class:'btn', type:'button', onclick:()=>imgInput.click() }, '選擇圖片'), imgInput), 
+        el('div', { class:'field' }, mkLabel('大小', sizeOut), sizeScale),
+        el('div', { class:'field' }, mkLabel('旋轉角度', angleOut), angleScale),
+        el('div', { class:'field' }, mkLabel('不透明度', opacityOut), opacityScale), 
+        msg, ab.node); 
+      ws.side.append(viewer.node); 
+      refresh();
+    });
+  },
+  img2pdf(t){
+    const { page, stage, setStep } = toolShell(t, '將您的相片與圖檔集結成 PDF 畫冊。自動偵測重複。');
+    const items = []; let uid = 0, ws = null, list, viewer, ab, auto, msg, banner;
+    const up = uploadCard({ accept:'image/*', multiple:true, label:'選擇圖片', formats:'支援 JPG, PNG 等', onFiles:add });
+    async function add(fs){ 
+      const loads = [];
+      for (const f of fs){ 
+        if (!/^image\//.test(f.type)) continue; 
+        const it = { id:uid++, file:f, url:URL.createObjectURL(f), bytes:null, fp:null, ratio:1 }; 
+        items.push(it); 
+        loads.push(new Promise(res => {
+          const im = new Image(); 
+          im.onload = () => { it.fp = fingerprint(im); it.ratio = im.naturalWidth/im.naturalHeight; res(); };
+          im.onerror = res; im.src = it.url;
+        }));
+      } 
+      if (items.length && !ws) buildWs(); 
+      if (ws){ draw(); await Promise.all(loads); draw(); auto.run(); } 
+    }
+    function buildWs(){
+      ws = Workspace('pages'); msg = msgBox(); list = el('div', { class:'thumbs' }); viewer = Viewer('畫冊預覽'); banner = el('div', { class:'banner' });
+      ab = ActionBar('下載 PDF', async () => { const b = auto.get(); if (b && await saveFile('相片集.pdf', pdfBlob(b))) setStep(3); }, msg);
+      auto = AutoResult(viewer, async () => { if (!items.length) return null; for (const it of items) if (!it.bytes) it.bytes = await imageToBytes(it.file); return Core.imagesToPdf(items.filter(it => it.bytes).map(it => it.bytes), { size:'a4', orient:'auto', margin:36 }); }, ab);
+      const more = filePicker('image/*', true, add);
+      ws.main.append(el('h2', { class:'sec-title', text:'相片集' }), banner, list, el('button', { class:'addmore', type:'button', onclick:() => more.click() }, '+ 加入更多'), more, msg); ws.side.append(viewer.node, ab.node);
+      if (window.Sortable) Sortable.create(list, { onEnd(){ const ids = [...list.children].map(c => +c.dataset.id); const copy = items.slice(); items.length = 0; ids.forEach(id => items.push(copy.find(x => x.id === id))); draw(); auto.run(); } });
+      stage.replaceChildren(ws.node); setStep(2);
+    }
+    function draw(){
+      if (!items.length){ ws = null; stage.replaceChildren(up); setStep(1); return; }
+      list.replaceChildren(...items.map((it, k) => el('div', { class:'thumb', 'data-id':it.id }, el('div', { class:'img' }, el('img', { class:'pv', src:it.url })), el('span', { class:'label', text:`P.${k + 1}` }), el('div', { class:'ctls' }, el('button', { class:'ctl', type:'button', onclick:() => { URL.revokeObjectURL(it.url); items.splice(k, 1); draw(); auto.run(); } }, '✕')))));
+      
+      const dups = findDuplicates(items.map(it => it.fp ? { fp:it.fp, ratio:it.ratio } : null));
+      if (dups.size) {
+        banner.className = 'banner warn show';
+        banner.replaceChildren(el('span', {}, '偵測到 ', el('b', { text:`${dups.size} 張` }), ' 重複圖片。'),
+         el('button', { class:'btn warn', style:'padding:6px 12px;', type:'button', onclick:() => { 
+            const drop = new Set(dups.keys());
+            for (let k = items.length - 1; k >= 0; k--) if (drop.has(k)){ URL.revokeObjectURL(items[k].url); items.splice(k, 1); }
+            draw(); auto.run();
+         } }, '移除重複'));
+      } else {
+        banner.className = 'banner'; banner.replaceChildren();
+      }
+    }
+    stage.append(up); return page;
+  },
+  word2pdf(t){ return officeTool(t, 'word'); },
+  excel2pdf(t){ return officeTool(t, 'excel'); },
+  pdf2img(t){
+    return singlePdfTool(t, '將文件中的每一頁匯出為高品質圖像。', 'preview', (doc, { ws, msg, setStep }) => {
+      const viewer = Viewer('影像預覽');
+      const ab = ActionBar('下載 ZIP 壓縮檔', async note => { const files = []; for (let k = 0; k < doc.n; k++){ note(`生成中：第 ${k + 1} 頁`); const c = await renderPage(doc.pdf, k + 1, { scale:2 }); files.push({ name:`${doc.base}_P${k+1}.jpg`, blob:await toBlob(c, 'image/jpeg', 0.9) }); c.width = c.height = 0; } const f = await packFiles(files, `${doc.base}_圖片集.zip`); if (await saveFile(f.name, f.blob)) setStep(3); }, msg);
+      ws.main.append(el('h2', { class:'sec-title', text:'確認準備匯出' }), el('p', { class:'note', text:`即將為您匯出 ${doc.n} 張高解析度 JPG 圖片。` }), msg, ab.node); ws.side.append(viewer.node); viewer.setProvider({ count:doc.n, render:(i, m) => renderPage(doc.pdf, i + 1, { maxDim:m }) });
+    });
+  },
+  ocr(t){
+    const { page, stage, setStep } = toolShell(t, '使用 Tesseract.js 本地引擎，安全、快速地提取圖片或掃描文件中的文字。');
+    const up = uploadCard({ accept:'application/pdf,.pdf,image/*', multiple:false, label:'選擇 PDF 或相片', formats:'支援 PDF, JPG, PNG', onFiles:load });
+    const wrap = el('div', {}, up);
+    async function load([f]){
+      setMsg(up.msg, '解析中...', 'info'); let srcCanvas, title = baseName(f.name);
+      try {
+        if (/\.pdf$/i.test(f.name) || f.type === 'application/pdf') { const doc = await openPdf(f); srcCanvas = await renderPage(doc.pdf, 1, { maxDim: 2000 }); }
+        else { const im = new Image(); await new Promise((res, rej) => { im.onload = res; im.onerror = rej; im.src = URL.createObjectURL(f); }); srcCanvas = document.createElement('canvas'); srcCanvas.width = im.naturalWidth; srcCanvas.height = im.naturalHeight; srcCanvas.getContext('2d').drawImage(im, 0, 0); }
+      } catch(e) { setMsg(up.msg, errText(e), 'err'); return; }
+      const card = el('div', { class:'card ws ws-preview' }); const main = el('div', { class:'ws-main' }); const side = el('div', { class:'ws-side', style:'padding:40px; display:grid; place-items:center;' });
+      const pvImg = el('img', { src: srcCanvas.toDataURL('image/jpeg', 0.8), style:'max-width:100%; box-shadow:var(--shadow);' }); side.append(pvImg);
+      const status = el('div', { class:'serif', style:'color:var(--muted); margin-bottom:15px; font-size: 0.95rem;' }, '就緒，請點擊開始識別。');
+      const ta = el('textarea', { class:'input', style:'min-height: 350px;' }); const startBtn = el('button', { class:'btn primary big block', type:'button' }, '提取文字');
+      startBtn.onclick = async () => {
+        startBtn.disabled = true;
+        try {
+          status.textContent = '正在載入 Tesseract.js 繁體中文模型...';
+          const { data: { text } } = await Tesseract.recognize(srcCanvas, 'chi_tra+eng', { logger: m => { if (m.status === 'recognizing text') { status.textContent = `文字辨識中... ${Math.round(m.progress * 100)}%`; } else { status.textContent = `初始化 (${m.status})...`; } } });
+          ta.value = text.trim(); status.textContent = '識別完成，您可以直接複製文字。'; setStep(3);
+        } catch(e) { status.textContent = '識別過程發生錯誤。'; status.style.color = 'var(--err)'; } finally { startBtn.disabled = false; startBtn.textContent = '再次提取'; }
+      };
+      main.append(fileHead(title, '第一頁', () => { wrap.replaceChildren(up); setStep(1); }), el('h2', { class:'sec-title', text:'文字識別結果' }), status, ta, el('div', { style:'margin-top:20px;' }, startBtn)); card.append(main, side); wrap.replaceChildren(card); setStep(2);
+    }
+    stage.append(wrap); return page;
+  }
+};
+
+/* --- 首頁與初始化 --- */
+let homeFilter = 'all';
+function home(){
+  const hero = el('section', { class: 'editorial-hero' },
+    el('div', { class: 'hero-left' },
+      el('div', { class: 'hero-subtitle' }, 'Utilities'),
+      el('h1', { class: 'hero-title serif' }, 'PDF 工具箱'),
+      el('p', { class: 'hero-desc' }, '在您的瀏覽器內安全、優雅地處理 PDF 檔案。完全保護隱私，無須上傳，結合本地端 AI 文字識別技術。'),
+      el('div', { class: 'hero-discover' }, el('span', { class: 'outline-text' }, '開始探索'), el('span', { class: 'thin-arrow' }, '⟶') )
+    ),
+    el('div', { class: 'hero-right' },
+      el('div', { class: 'stamp' }, el('svg', { viewBox:'0 0 100 100' }, el('path', { d:'M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0', fill:'none', id:'circle' }), el('text', { style:'font-family:"Playfair Display"; font-size:12px; letter-spacing:3px;' }, el('textPath', { href:'#circle' }, 'EVERYDAY • ANYWHERE •'))) ),
+      el('div', { class: 'featured-card' },
+        el('div', { class: 'fc-img' }),
+        el('div', { class: 'fc-content' }, el('h3', { class: 'fc-title' }, '文字識別 (OCR)'), el('p', { class: 'fc-desc' }, '無需雲端 API，運用瀏覽器本地 AI 引擎，流暢提取掃描檔與圖片中的文字資訊。'), el('button', { class: 'fc-link', onclick: () => go('ocr') }, '前往體驗 ⟶') )
+      )
+    )
+  );
+  const toolsContainer = el('div', { class: 'container' }); const filters = el('div', { class: 'filters' });
+  ['all', 'org', 'edit', 'to', 'ocr'].forEach(k => { filters.append(el('button', { class: 'pill', 'aria-pressed': String(homeFilter === k), onclick: () => { homeFilter = k; renderTiles(); } }, k === 'all' ? '全部工具' : CATS[k].name)); });
+  const tilesGrid = el('div', { class: 'tiles' });
+  function renderTiles() {
+    tilesGrid.replaceChildren(...TOOLS.filter(t => homeFilter === 'all' || homeFilter === t.cat).map(t => el('button', { class: 'tile', onclick: () => go(t.id) }, el('div', { class: 'tile-head' }, el('span', { class: 'tile-title' }, t.name), t.isNew ? el('span', { class:'new' }, 'New') : null ), el('span', { class: 'tile-desc' }, t.desc) )));
+    [...filters.children].forEach(btn => btn.setAttribute('aria-pressed', String(btn.textContent === (homeFilter==='all' ? '全部工具' : CATS[homeFilter].name))));
+  }
+  toolsContainer.append(el('div', { class: 'tools-header' }, el('h2', { class: 'serif' }, '工具系列')), filters, tilesGrid);
+  renderTiles();
+  return el('div', {}, topNav(), hero, el('section', { class: 'tools-section' }, toolsContainer), siteFoot());
+}
+function libError(){ return el('div', { class:'container', style:'padding-top:100px; text-align:center;' }, el('h1', { class:'serif', text:'系統無法連線' }), el('p', { style:'color:var(--muted); margin-top: 20px;', text:'必備的程式庫無法載入，請確認您的網路連線後重新整理頁面。' })); }
+function go(id){ stopLoaders(); const app = $('#app'); if (!LIBS_OK){ app.replaceChildren(libError()); return; } const t = TOOLS.find(x => x.id === id); app.replaceChildren(t ? VIEWS[id](t) : home()); window.scrollTo(0, 0); }
+setTimeout(() => go(null), 150);
+</script>
+</body>
+</html>
